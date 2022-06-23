@@ -1,0 +1,6 @@
+.idea/
+dist/
+src/nlpertools/nlpertools.egg-info/
+src/nlpertools.egg-info/
+
+__pycache__/

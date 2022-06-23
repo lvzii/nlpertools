@@ -1,0 +1,25 @@
+# common
+__pycache__/
+.Ds_Store
+DS_Store
+.vs/
+.idea/
+.vscode/
+.venv/
+*.pyc
+
+# special
+wandb/
+!.gitkeep
+
+# project
+#data/*
+#!data/train_data
+#dataset/*
+cached*
+output/
+logs
+logs/*
+output/*
+attach/*
+support/*
