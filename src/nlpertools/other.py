@@ -8,73 +8,25 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from functools import wraps, reduce
 
-# External
 import numpy as np
 import psutil
-# import pyquery as pq
+import pyquery as pq
 import requests
 import torch
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import precision_recall_fscore_support
 from tqdm import tqdm
+from win32evtlogutil import langid
+
+from .io.file import writetxt_w_list, writetxt_a
 
 CHINESE_PUNCTUATION = list('，。；：‘’“”！？《》「」【】<>（）、')
 ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 
-from .io.dir import j_listdir, walk
-
-
-def convert_import_to_import(root_path):
-    for path in walk(root_path):
-        print(path)
-        # data = readtxt_string(path)
-
-        print()
-
-
-def convert_try_import_to_try_import():
-    pass
-
-
-def convert_import_string_to_import_list(text):
-    """
-    该方法将 import 转变为 try import
-    """
-    models_to_import = []
-
-    import_list = text.split("\n")
-    for each in import_list:
-        name, package, as_name = None, None, None
-        elements = each.split(" ")
-        # from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-        for pre, cur in zip(elements, elements[1:]):
-            if cur.endswith(","):
-                cur = cur.rstrip(",")
-            # 为了实现from import 和 import统一，首先把package和name的含义反过来，后面再掉换
-            if pre == "import":
-                package = cur
-            if pre == "from":
-                name = cur
-            if pre == "as":
-                as_name = cur
-            if pre[-1] == ",":
-                # 针对 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-                # 将将前面部分和当前的组成新字段
-                prefix = each.split("import")[0]
-                import_list.append("{}import {}".format(prefix, cur))
-        if not as_name:
-            as_name = package.split(".")[-1]
-        if not name:
-            name, package = package, name
-        models_to_import.append((name, package, as_name))
-    # 打印
-    for name, package, as_name in models_to_import:
-        print('{} = try_import("{}", {})'.format(as_name, name, '"{}"'.format(package) if package else package))
-
 
 def seed_everything():
     # seed everything
-    seed = 222
+    seed = 7777777
     np.random.seed(seed)
     torch.manual_seed(seed)  # CPU随机种子确定
     torch.cuda.manual_seed(seed)
@@ -264,6 +216,16 @@ def fn_timer(function):
         return result
 
     return function_timer
+
+
+def example(function):
+    @wraps(function)
+    def function_example(*args, **kwargs):
+        print("此方法仅仅用于提示该方法怎么写")
+        result = function(*args, **kwargs)
+        return result
+
+    return function_example
 
 
 def get_substring_loc(text, subtext):

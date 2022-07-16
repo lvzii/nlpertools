@@ -1,29 +1,36 @@
 # encoding=utf-8
-from .io import *
+import codecs
+import os
 import random
-try:
-    import pandas as pd
-    import seaborn as sns
-    from matplotlib import pyplot as plt
-    import xgboost as xgb
 
-except:
-    pass
+import numpy as np
+import seaborn as sns
+import torch
+import torch.nn as nn
+import xgboost as xgb
+from ltp import LTP
+from matplotlib import pyplot as plt
+from nltk.stem import WordNetLemmatizer
+from sklearn import metrics
+from transformers import BertTokenizer, BertForMaskedLM
+
+from src.nlpertools import readtxt_list_all_strip, j_mkdir, writetxt_w_list
+
 
 class DataAnalysis:
+    @staticmethod
     def draw_pic(df, save_path):
         """
         画直方图，对比两个不同类别差异
-        :param df: 
-        :param save_path: 
+        :param df: pd.DataFrame
+        :param save_path: str
         :return: 
         """
-        df = pd.DataFrame()
-        save_path = ''
-        sns.distplot(df[df["label"] == 1]["feature"], label="pos")
-        sns.distplot(df[df["label"] == 0]["feature"], label="neg")
+        sns.distplot(df[df["label"] == 1]["feature"], label="label1")
+        sns.distplot(df[df["label"] == 0]["feature"], label="label2")
         plt.legend()
         plt.savefig(save_path)
+
 
 class DataStructure:
     spo = {
@@ -36,6 +43,7 @@ class DataStructure:
     }
     ner_input_example = '这句话一共有两个实体分别为大象和老鼠。'
     ner_label_example = list('OOOOOOOOOOOOO') + ['B-s', 'I-s'] + ['O'] + ['B-o', 'I-o'] + ['O']
+
 
 def text_jaccard(ipt1, ipt2, ipt_level="char", sim_level="char"):
     # 两个句子的jacccard系数
@@ -52,17 +60,11 @@ def text_jaccard(ipt1, ipt2, ipt_level="char", sim_level="char"):
     return int(100 * float(len(c)) / (len(a) + len(b) - len(c)))
 
 
-'''
-try:
-    from ltp import LTP
-except:
-    pass
-
 class STEM(object):
     def __init__(self, IPT_MODEL_PATH):
         self.ltp = LTP(IPT_MODEL_PATH)
 
-    def start(self, sentence):
+    def start_by_dep(self, sentence):
         seg, hidden = self.ltp.seg([sentence])
         dep = self.ltp.dep(hidden)  # , graph=False)
         seg, dep = seg[0], dep[0]
@@ -73,16 +75,13 @@ class STEM(object):
                 verb = seg[i[1]]
             if 'VOB' in i[2]:
                 if seg[i[1]] == verb:
-                    object = seg[i[]]
+                    object = seg[i[0]]
 
                 return subject
 
         return None
-class STEM(object):
-    def __init__(self, IPT_MODEL_PATH):
-        self.ltp = LTP(IPT_MODEL_PATH)
 
-    def start(self, sentence):
+    def start_by_srl(self, sentence):
         """
         用语义角色标注工具
         :param sentence: "他叫汤姆去拿外衣。"
@@ -103,27 +102,6 @@ class STEM(object):
                 events.append(args)
         # print(events)
         return events
-
-    def start_dep_method(self, sentence):
-        # seg, hidden = self.ltp.seg([sentence])
-        # dep = self.ltp.dep(hidden)#, graph=False)
-        # seg, dep = seg[0], dep[0]
-        # for i in dep:
-        #     # 主谓宾
-        #     if 'SBV' == i[2]:
-        #         subject = seg[i[0]]
-        #         verb = seg[i[1]]
-        #     if 'VOB' in i[2]:
-        #         if seg[i[1]] == verb:
-        #             object = seg[i]
-        #         return subject
-        return None
-
-IPT_MODEL_PATH = './tiny'
-stem = STEM(IPT_MODEL_PATH)
-sentence = '美国袭击伊拉克'
-a = stem.start(sentence)
-'''
 
 
 # 这个是另一种
@@ -306,6 +284,8 @@ def split_5_percent(lines, sample_precent=5):
     print(less_has_raw_line_info)
     print(most)
     return most, less_has_raw_line_info
+
+
 def split_sentences(sentences, mode='chinese'):
     # sentences->Str
     # example '12“345。”“6789”'
@@ -340,9 +320,9 @@ def split_sentences(sentences, mode='chinese'):
                     splited_sentences.append(sentences[start_idx:idx + 1].strip())
                     start_idx = idx + 1
     return splited_sentences
-def pos_huanyuan():
-    from nltk.stem import WordNetLemmatizer
-    data = nlpertools.readtxt_list_all_strip('ie-selfmedia/')
+
+
+def pos_reduction():
     wnl = WordNetLemmatizer()
     # lemmatize nouns
     print(wnl.lemmatize('cars', 'n'))
@@ -352,6 +332,82 @@ def pos_huanyuan():
     print(wnl.lemmatize('running', 'v'))
     print(wnl.lemmatize('ate', 'v'))
 
+
+class DataVisualization:
+    #  和下面的类冲突了
+    pass
+
+
+class CalcPPL(object):
+    # ppl计算
+    # https://www.scribendi.ai/comparing-bert-and-gpt-2-as-language-models-to-score-the-grammatical-correctness-of-a-sentence/
+    def __init__(self, path):
+        self.model = BertForMaskedLM.from_pretrained(path)
+        self.model.eval()
+        # Load pre-trained model tokenizer (vocabulary)
+        self.tokenizer = BertTokenizer.from_pretrained(path)
+
+    def ppl_1(self, sentence):
+        tokenizer = self.tokenizer
+        model = self.tokenizer
+        tokenize_input = tokenizer.tokenize(sentence)
+        tokenize_input = tokenize_input
+        tensor_input = torch.tensor([tokenizer.convert_tokens_to_ids(tokenize_input)])
+        with torch.no_grad():
+            loss = model(tensor_input, labels=tensor_input)[0]
+        return np.exp(loss.detach().numpy())
+
+    # [1] Salazar J, Liang D, Nguyen T Q, et al. Masked Language Model Scoring[C]//Proceedings of ACL. 2020: 2699-2712.
+    def ppl_2(self, sentence):
+        tokenizer = self.tokenizer
+        model = self.tokenizer
+        with torch.no_grad():
+            tokenize_input = tokenizer.tokenize(sentence)
+            tensor_input = torch.tensor([tokenizer.convert_tokens_to_ids(tokenize_input)])
+            sen_len = len(tokenize_input)
+            sentence_loss = 0.
+
+            for i, word in enumerate(tokenize_input):
+                # add mask to i-th character of the sentence
+                tokenize_input[i] = '[MASK]'
+                mask_input = torch.tensor([tokenizer.convert_tokens_to_ids(tokenize_input)])
+
+                output = model(mask_input)
+
+                prediction_scores = output[0]
+                softmax = nn.Softmax(dim=0)
+                ps = softmax(prediction_scores[0, i]).log()
+                word_loss = ps[tensor_input[0, i]]
+                sentence_loss += word_loss.item()
+
+                tokenize_input[i] = word
+            ppl = np.exp(-sentence_loss / sen_len)
+            # print("困惑度：", ppl)
+            return ppl
+
+    def test(self):
+        sentence = "输入句子："
+        ppl = self.ppl_1(sentence)
+        ppl2 = self.ppl_2(sentence)
+        print(ppl)
+        print(ppl2)
+
+
+class Evaluate():
+    def __init__(self):
+        pass
+
+    def auc_metric(self, k):
+        pass
+
+    def map_metric(self):
+        pass
+
+    def ndcg(self, n, y_true, y_score):
+        report = metrics.ndcg_score(y_true, y_score)
+        return report
+
+
 class DecideTreeUtils:
     @staticmethod
     def draw(bst):
@@ -360,3 +416,9 @@ class DecideTreeUtils:
         xgb.plot_tree(bst, ax=ax_tree)
         fig_tree.savefig('tree.png')
         plt.show()
+
+
+if __name__ == '__main__':
+    stem = STEM(IPT_MODEL_PATH)
+    test_sentence = '美国袭击伊拉克'
+    a = stem.start_by_srl(test_sentence)

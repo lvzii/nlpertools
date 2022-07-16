@@ -2,5 +2,6 @@
 dist/
 src/nlpertools/nlpertools.egg-info/
 src/nlpertools.egg-info/
+src/upload_for_pypi
 
 __pycache__/

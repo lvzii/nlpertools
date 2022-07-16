@@ -4,16 +4,13 @@
 import codecs
 import json
 import pickle
+import random
+import time
 
 import yaml
 
-try:
-    import pandas as pd
-except:
-    pass
 
-
-def load_config(path):
+def read_yaml(path):
     return yaml.load(codecs.open(path), Loader=yaml.FullLoader)
 
 
@@ -31,10 +28,14 @@ def _merge_file(filelist, save_filename, shuffle=False):
 # 读txt文件 一次全读完 返回list 去换行
 def readtxt_list_all_strip(path, encoding='utf-8'):
     lines = []
+    t_start = time.time()
     with codecs.open(path, 'r', encoding) as r:
-        for line in r.readlines():
+        for ldx, line in enumerate(r.readlines()):
             line = line.strip('\n').strip("\r")
             lines.append(line)
+        if ldx > 10e5:
+            t_end = time.time()
+            print("read {} over, cos time {} ms".format(path, t_end - t_start))
         return lines
 
 

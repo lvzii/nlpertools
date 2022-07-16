@@ -11,11 +11,11 @@ handlers:
     formatter: simple
     stream: ext://sys.stdout
 
-#  debug: # 加了debug会重复，可能和console重复了
-#    class: logging.StreamHandler
-#    level: DEBUG
-#    formatter: simple
-#    stream: ext://sys.stdout
+  #  debug: # 加了debug会重复，可能和console重复了
+  #    class: logging.StreamHandler
+  #    level: DEBUG
+  #    formatter: simple
+  #    stream: ext://sys.stdout
 
   info:
     class: logging.handlers.TimedRotatingFileHandler
