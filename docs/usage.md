@@ -16,7 +16,8 @@ Writing a file
 To write a txt file, you can use the
 `nlpertools.readtxt_list_all_strip()` function:
 
-::: nlpertools.readtxt_list_all_strip
+::: src.nlpertools.readtxt_list_all_strip
+
 
 
 <br>
@@ -25,6 +26,6 @@ To write a txt file, you can use the
 For example:
 
 ```python
->>> import nlpertools
->>> nlpertools.readtxt_list_all_strip("res", "res.txt")
+>>> import src.nlpertools
+# >>> nlpertools.readtxt_list_all_strip("res", "res.txt")
 ```

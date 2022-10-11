@@ -41,6 +41,7 @@ https://nlpertools.readthedocs.io/en/latest/
 
 - [git commit guide](https://blog.csdn.net/fd2025/article/details/124543690)
 
+- [readthedoc 检查文档构建状况](https://readthedocs.org/projects/nlpertools/builds)
 ```python
 class STEM(object):
     from ltp import LTP
