@@ -1,0 +1,43 @@
+neo4j_url: "******"
+
+mysql:
+  host: "******"
+  port: "******"
+  user: "******"
+  password: "******"
+  database: "******"
+
+es:
+  host:
+    - "******"
+    - "******"
+    - "******"
+    - "******"
+  timeout:
+    - "******"
+
+mongo:
+  - uri: "******"
+  - db: "******"
+  - col: "******"
+redis:
+  - uri: "******"
+
+hbase:
+  - # 配置
+  - TOPIC_NUM : "******"
+  - # 默认配置
+  - DEFAULT_HOST : "******"
+  - DEFAULT_PORT : "******"
+  - # DEFAULT_TRANSPORT = "******"
+  - DEFAULT_TRANSPORT : "******"
+  - DEFAULT_COMPAT : "******"
+  - # DEFAULT_PROTOCOL = "******"
+  - DEFAULT_PROTOCOL : "******"
+
+kafka:
+  bootstarp_server:
+    - "******"
+    - "******"
+    - "******"
+  topic: "******"

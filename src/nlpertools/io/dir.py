@@ -1,0 +1,36 @@
+#!/usr/bin/python3.8
+# -*- coding: utf-8 -*-
+# @Author  : youshu.Ji
+import os
+
+
+# dir ----------------------------------------------------------------------
+def j_mkdir(name):
+    os.makedirs(name, exist_ok=True)
+
+
+def get_filename(path):
+    '''
+    返回路径最后的文件名
+    :param path:
+    :return:
+    '''
+    # path = r'***/**/***.txt'
+    filename = os.path.split(path)[-1]
+    return filename
+
+
+def j_listdir(dir_name, including_dir=True):
+    #  yield
+    filenames = os.listdir(dir_name)
+    for filename in filenames:
+        if including_dir:
+            yield os.path.join(dir_name, filename)
+        else:
+            yield filename
+
+
+# 合并文件 TODO 还没写
+def imgrate_files(path):
+    filenames = os.listdir(path)
+    return None

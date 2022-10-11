@@ -1,0 +1,42 @@
+version: 1
+formatters:
+  simple:
+    format: '%(asctime)s.%(msecs)03d [%(process)d] %(levelname)8s [%(module)s.%(funcName)s:%(lineno)d]: %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+
+  #  debug: # 加了debug会重复，可能和console重复了
+  #    class: logging.StreamHandler
+  #    level: DEBUG
+  #    formatter: simple
+  #    stream: ext://sys.stdout
+
+  info:
+    class: logging.handlers.TimedRotatingFileHandler
+    filename: logs/info.log
+    level: INFO
+    formatter: simple
+    when: D
+    interval: 1
+    backupCount: 15
+    encoding: utf-8
+
+  error:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: ERROR
+    formatter: simple
+    filename: logs/error.log
+    when: D
+    interval: 1
+    backupCount: 15
+    encoding: utf-8
+
+root:
+  level: INFO
+  handlers: [ console,info,error ] # ,debug
