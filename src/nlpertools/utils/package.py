@@ -10,7 +10,7 @@ def try_import(name, package):
         return import_module(name, package=package)
     except:
         pass
-        print("import {} failed".format(name))
+        # print("import {} failed".format(name))
     finally:
         pass
 
@@ -82,6 +82,8 @@ pq = try_import("pyquery", None)
 CountVectorizer = try_import("sklearn.feature_extraction.text", "CountVectorizer")
 precision_recall_fscore_support = try_import("sklearn.metrics", "precision_recall_fscore_support")
 tqdm = try_import("tqdm", "tqdm")
-langid = try_import("win32evtlogutil", "langid")
+# TODO 自动导出langid和win32evtlogutil输出有bug
+langid = try_import("langid", None)
+win32evtlogutil = try_import("win32evtlogutil", None)
 TfidfTransformer = try_import("sklearn.feature_extraction.text", "TfidfTransformer")
 yaml = try_import("yaml", None)
