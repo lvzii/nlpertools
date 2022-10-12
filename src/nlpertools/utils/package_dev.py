@@ -3,11 +3,17 @@
 # @Author  : youshu.Ji
 import importlib
 from importlib import import_module
-
+from importlib.util import LazyLoader
+from .lazy import lazy_module
 
 def try_import(name, package):
     try:
-        return import_module(name, package=package)
+        if package:
+            # print("import {} success".format(name))
+            return lazy_module("{}.{}".format(package, name))
+        else:
+            return lazy_module(name)
+        # return import_module(name, package=package)
     except:
         pass
         print("import {} failed".format(name))
@@ -16,11 +22,6 @@ def try_import(name, package):
 
 
 def lazy_import(importer_name, to_import):
-    """
-    Example from net
-    author: unknown
-    this function is not used
-    """
     """Return the importing module and a callable for lazy importing.
 
     The module named by importer_name represents the module performing the
@@ -82,6 +83,7 @@ pq = try_import("pyquery", None)
 CountVectorizer = try_import("sklearn.feature_extraction.text", "CountVectorizer")
 precision_recall_fscore_support = try_import("sklearn.metrics", "precision_recall_fscore_support")
 tqdm = try_import("tqdm", "tqdm")
-langid = try_import("win32evtlogutil", "langid")
+langid = try_import("langid", None)
+# win32evtlogutil?
 TfidfTransformer = try_import("sklearn.feature_extraction.text", "TfidfTransformer")
 yaml = try_import("yaml", None)

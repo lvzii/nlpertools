@@ -25,7 +25,8 @@ To write a txt file, you can use the
 
 For example:
 
+[//]: #  (这里需要测试一下不用src对不对，以及下面一行不注释对不对)
 ```python
->>> import src.nlpertools
+>>> import nlpertools
 # >>> nlpertools.readtxt_list_all_strip("res", "res.txt")
 ```

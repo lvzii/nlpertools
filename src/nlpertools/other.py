@@ -53,7 +53,7 @@ def git_push():
     while 1:
         num += 1
         print("retry num: {}".format(num))
-        res = os.system("git push")
+        res = os.system("git push --set-upstream origin main")
         print(str(res))
         if not str(res).startswith("fatal"):
             print("scucess")
