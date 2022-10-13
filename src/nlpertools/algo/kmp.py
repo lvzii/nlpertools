@@ -22,6 +22,22 @@ def build(pattern_string):
     return backtrace_points
 
 
+def find_after_build(main_string, pattern_string):
+    backtracker = build(pattern_string)
+    # print(backtracker)
+    main_pointer, pattern_pointer = -1, -1
+    while main_pointer <= len(main_string) - 1:
+        if pattern_pointer == -1 or pattern_string[pattern_pointer] == main_string[main_pointer]:
+            # 这是返回首次匹配时main的位置
+            if pattern_pointer == len(pattern_string) - 1:
+                return main_pointer - len(pattern_string) + 1
+            pattern_pointer += 1
+            main_pointer += 1
+        else:
+            pattern_pointer = backtracker[pattern_pointer]
+    return -1
+
+
 def find(main_string, pattern_string):
     """
     模式匹配
@@ -46,10 +62,13 @@ def find(main_string, pattern_string):
 
 
 if __name__ == '__main__':
-    test_main_string = "aa"
-    test_pattern_string = "aa"
+    test_main_string = "a"
+    test_pattern_string = "a"
 
-    res = build(test_pattern_string)
-    print(res)
-    res = find(test_main_string, test_pattern_string)
+    # res = build(test_pattern_string)
+    # print(res)
+    # res = find(test_main_string, test_pattern_string)
+    # print(res)
+
+    res = find_after_build(test_main_string, test_pattern_string)
     print(res)
