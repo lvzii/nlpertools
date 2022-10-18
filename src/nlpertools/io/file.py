@@ -7,11 +7,14 @@ import pickle
 import random
 import time
 
+# import omegaconf
 # import yaml
 from ..utils.package import *
 
 
-def read_yaml(path):
+def read_yaml(path, omega=False):
+    if omega:
+        return omegaconf.OmegaConf.load(path)
     return yaml.load(codecs.open(path), Loader=yaml.FullLoader)
 
 

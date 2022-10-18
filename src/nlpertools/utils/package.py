@@ -87,3 +87,5 @@ langid = try_import("langid", None)
 win32evtlogutil = try_import("win32evtlogutil", None)
 TfidfTransformer = try_import("sklearn.feature_extraction.text", "TfidfTransformer")
 yaml = try_import("yaml", None)
+
+omegaconf = try_import("omegaconf", None)
