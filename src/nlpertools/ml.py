@@ -304,40 +304,46 @@ def split_5_percent(lines, sample_precent=5):
     return most, less_has_raw_line_info
 
 
-def split_sentences(sentences, mode='chinese'):
+def split_sentence(sentence, language='chinese'):
+    """
+    分句，英文有nltk，中文怎么能没有好的分句工具呢
+    :param sentence:
+    :param language:
+    :return:
+    """
     # sentences->Str
     # example '12“345。”“6789”'
-    if mode == 'chinese':
+    assert language in ["chinese", "english"], "unsupportable for other language"
+    if language == 'chinese':
         split_signs = list('。！？…')
         other_sign = "”"
-    elif mode == 'english':
+    elif language == 'english':
         split_signs = list('.!?')
         other_sign = '"'
     else:
-        print('暂时还没有')
         split_signs = list('.!?')
         other_sign = '"'
-    splited_sentences = []
+    sentences = []
     start_idx = 0
-    for idx, char in enumerate(sentences):
-        if idx == len(sentences) - 1:
+    for idx, char in enumerate(sentence):
+        if idx == len(sentence) - 1:
             if char in split_signs:
-                splited_sentences.append(sentences[start_idx:idx + 1].strip())
+                sentences.append(sentence[start_idx:idx + 1].strip())
                 start_idx = idx + 1
             else:
-                splited_sentences.append(sentences[start_idx:].strip())
+                sentences.append(sentence[start_idx:].strip())
         else:
             if char in split_signs:
-                if sentences[idx + 1] == other_sign:
-                    if idx < len(sentences) - 2:
+                if sentence[idx + 1] == other_sign:
+                    if idx < len(sentence) - 2:
                         # 处理。”。
-                        if sentences[idx + 2] not in split_signs:
-                            splited_sentences.append(sentences[start_idx:idx + 2].strip())
+                        if sentence[idx + 2] not in split_signs:
+                            sentences.append(sentence[start_idx:idx + 2].strip())
                             start_idx = idx + 2
-                elif sentences[idx + 1] not in split_signs:
-                    splited_sentences.append(sentences[start_idx:idx + 1].strip())
+                elif sentence[idx + 1] not in split_signs:
+                    sentences.append(sentence[start_idx:idx + 1].strip())
                     start_idx = idx + 1
-    return splited_sentences
+    return sentences
 
 
 def pos_reduction():
@@ -375,7 +381,7 @@ class CalcPPL(object):
             loss = model(tensor_input, labels=tensor_input)[0]
         return np.exp(loss.detach().numpy())
 
-    # [1] Salazar J, Liang D, Nguyen T Q, et al. Masked Language Model Scoring[C]//Proceedings of ACL. 2020: 2699-2712.
+    # [1] Salazar J, Liang D, Nguyen T Q, et al. Masked Language Model Scoring[C]//Proceedings of ACL. 2020: 2699-2712.
     def ppl_2(self, sentence):
         tokenizer = self.tokenizer
         model = self.tokenizer
