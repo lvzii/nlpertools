@@ -6,12 +6,17 @@ from importlib import import_module
 from importlib.util import LazyLoader
 from .lazy import lazy_module
 
+EXCLUDE_LAZYIMPORT = {"torch", "torch.nn", "numpy"}
+
+
 def try_import(name, package):
     try:
         if package:
             # print("import {} success".format(name))
             return lazy_module("{}.{}".format(package, name))
         else:
+            if name in EXCLUDE_LAZYIMPORT:
+                return import_module(name, package=package)
             return lazy_module(name)
         # return import_module(name, package=package)
     except:
