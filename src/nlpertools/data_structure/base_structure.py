@@ -6,6 +6,7 @@ from typing import List
 
 class ListNode:
     def __init__(self, x):
+        self.length = 1
         if type(x) is int:
             self.val = x
             self.next = None
@@ -14,6 +15,7 @@ class ListNode:
             pre = ListNode(x.pop(0))
             head = pre
             while x:
+                self.length += 1
                 pre.next = ListNode(x.pop(0))
                 pre = pre.next
             self.val = head.val
@@ -23,9 +25,13 @@ class ListNode:
         pass
 
     def __str__(self):
+        # TODO 循环链表标记出来
         print_string = [self.val]
         tmp = self.next
-        while tmp:
+        # 防止循环链表
+        recurrent_num = 0
+        while tmp and recurrent_num <= self.length + 10:
+            recurrent_num += 1
             print_string.append(tmp.val)
             tmp = tmp.next
         return str(print_string)
