@@ -304,18 +304,22 @@ def split_5_percent(lines, sample_precent=5):
     return most, less_has_raw_line_info
 
 
-def split_sentence(sentence, language='chinese'):
+def split_sentence(sentence, language='chinese', cross_line=True):
     """
     分句，英文有nltk，中文怎么能没有好的分句工具呢
     :param sentence:
     :param language:
+    :param cross_line:
     :return:
     """
     # sentences->Str
     # example '12“345。”“6789”'
     assert language in ["chinese", "english"], "unsupportable for other language"
+    sentence = sentence.replace("\r", "")
     if language == 'chinese':
         split_signs = list('。！？…')
+        if cross_line:
+            split_signs.append("\n")
         other_sign = "”"
     elif language == 'english':
         split_signs = list('.!?')
