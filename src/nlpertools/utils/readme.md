@@ -10,3 +10,6 @@ package说明
 
 # v2
 通过环境变量加载需要import的
+
+# v3
+nlpertools里如果import了paddle等东西会巨慢,查到原因了是ltp,解决方法是用rasa的required_packages字段控制
