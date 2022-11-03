@@ -1,6 +1,7 @@
 # !/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
+import datetime
 import json
 import logging
 
@@ -102,9 +103,24 @@ class MongoOps(object):
             record = sorted(record, key=lambda x: len(x.get("another_value", [])))[0]
             return record
 
+    def delete_all(self):
+        query = {}
+        deleted = self.collection.delete_many(query)
+        return deleted
+
     def delete_by_time(self, time):
         query = {"name": {"$regex": "^F"}}
         deleted = self.collection.delete_many(query)
+
+    def fetch_by_time(self, year=2022, month=7, day=7, hour=7, minute=7, second=7):
+        query = {"query_time": {"$gte": datetime.datetime(year, month, day, hour, minute, second)}}
+        sort_sql = [("query_time", -1)]
+        ans = []
+        print('提取所有数据.')
+        for record in self.collection.find(query).sort(sort_sql):
+            record['_id'] = str(record['_id'])
+            ans.append(record)
+        return ans
 
     def save_to_mongo(self, special_value, each_item):
         """
@@ -121,6 +137,30 @@ class MongoOps(object):
             insert_item = {
                 "special_value": special_value,
                 "each_item": [each_item]
+            }
+            self.collection.insert_one(insert_item)
+        print("update success")
+
+    def insert_one(self, data):
+        self.collection.insert_one(data)
+
+    def update_to_mongo(self, condition_term, condition_value, new_value):
+        """
+        根据提供的字段和值，查询出对应的数据，更新数据存入mongo
+        类似 updata
+        :param condition_term: 条件字段term
+        :param condition_value: 条件字段值
+        :param new_value: 新的值。最好是dict，不是dict的话不知道行不行
+        :return:
+        """
+        query = self.collection.find({condition_term: condition_value})
+        if list(query):
+            self.collection.update_one({condition_term: condition_value},
+                                       {"$push": new_value})
+        else:
+            insert_item = {
+                condition_term: condition_value,
+                "processed_data": new_value
             }
             self.collection.insert_one(insert_item)
         print("update success")
