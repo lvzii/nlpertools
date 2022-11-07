@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
 # 定义装饰器
-from functools import wraps
+import logging
 import time
+from functools import wraps
 
 
 def fn_timer(function):
@@ -74,6 +75,21 @@ def fn_try(parameter):
     return wrapper
 
 
+def try_log(function):
+    @wraps(function)
+    def inner(*args, **kwargs):
+        try:
+            result = function(*args, **kwargs)
+            return result
+        except Exception as e:
+            logging.error(*args)
+            logging.error(e.__traceback__.tb_frame.f_globals["__file__"])
+            logging.error(e.__traceback__.tb_lineno)
+            logging.error(repr(e))
+
+    return inner
+
+
 def example(function):
     @wraps(function)
     def function_example(*args, **kwargs):
@@ -93,5 +109,3 @@ def singleton(cls):
         return instances[cls]
 
     return _singleton
-
-

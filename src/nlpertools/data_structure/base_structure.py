@@ -39,9 +39,15 @@ class ListNode:
 
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
+        if type(val) is list:
+            pass
+        else:
+            self.val = val
+            self.left = left
+            self.right = right
+
+    def __str__(self):
+        pass
 
 
 if __name__ == '__main__':
