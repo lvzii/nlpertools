@@ -1,7 +1,6 @@
 #!/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
-from typing import List
 
 
 class ListNode:
@@ -47,6 +46,29 @@ class TreeNode:
             self.right = right
 
     def __str__(self):
+        pass
+
+    @staticmethod
+    def pre_order(node):
+        stack = []
+        res = []
+        while stack or node:
+            while node:
+                res.append(node)
+                stack.append(node)
+                node = node.left
+            node = stack.pop(-1)
+            node = node.right
+        return res
+
+    def mid_order(self, node):
+        if node.left:
+            self.mid_order(node.left)
+        print(node.val)
+        if node.right:
+            self.mid_order(node.right)
+
+    def post_order(self, node=None):
         pass
 
 
