@@ -219,6 +219,21 @@ def get_substring_loc(text, subtext):
     return l, r
 
 
+def auto_close():
+    """
+    针对企业微信15分钟会显示离开的机制，假装自己还在上班
+    """
+    import pyautogui as pg
+    import time
+    import os
+    cmd = 'schtasks /create /tn shut /tr "shutdown -s -f" /sc once /st 23:30'
+    os.system(cmd)
+    while 1:
+        pg.moveTo(970, 17, 2)
+        pg.click()
+        time.sleep(840)
+
+
 def tf_idf(corpus, save_path):
     tfidfdict = {}
     vectorizer = CountVectorizer()  # 该类会将文本中的词语转换为词频矩阵，矩阵元素a[i][j] 表示j词在i类文本下的词频
