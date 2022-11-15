@@ -7,16 +7,33 @@ import time
 from functools import wraps
 
 
-def fn_timer(function):
-    @wraps(function)
-    def function_timer(*args, **kwargs):
-        t0 = time.time()
-        result = function(*args, **kwargs)
-        t1 = time.time()
-        print('[finished {func_name} in {time:.2f}s]'.format(func_name=function.__name__, time=t1 - t0))
-        return result
+def fn_timer(analyse=False):
+    def wrapper(func):
+        def func_time(*args, **kwargs):
+            t0 = time.time()
+            result = func(*args, **kwargs)
+            t1 = time.time()
+            print('[finished {func_name} in {time:.2f}s]'.format(func_name=func.__name__, time=t1 - t0))
+            return result
 
-    return function_timer
+        def func_time_analyse(*args, **kwargs):
+            from pyinstrument import Profiler
+
+            profiler = Profiler()
+            profiler.start()
+
+            result = func(*args, **kwargs)
+
+            profiler.stop()
+            profiler.print()
+            return result
+
+        if analyse:
+            return func_time_analyse
+        else:
+            return func_time
+
+    return wrapper
 
 
 def fn_timeout_checker(wait_time, callback):
