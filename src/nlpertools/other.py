@@ -1,6 +1,7 @@
 #!/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
+import itertools
 import os
 import re
 import string
@@ -217,6 +218,16 @@ def get_substring_loc(text, subtext):
             '[', '\[').replace('+', '\+'), text)
     l, r = [i for i in res][0].regs[0]
     return l, r
+
+
+def squeeze_list(high_dim_list):
+    return list(itertools.chain.from_iterable(high_dim_list))
+
+
+def unsqueeze_list(flatten_list, each_element_len):
+    two_dim_list = [flatten_list[i * each_element_len:(i + 1) * each_element_len] for i in
+                    range(len(flatten_list) // each_element_len)]
+    return two_dim_list
 
 
 def auto_close():
