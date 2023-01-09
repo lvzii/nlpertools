@@ -61,8 +61,8 @@ def readtxt_list_each_strip(path):
     with codecs.open(path, 'r', 'utf-8') as r:
         line = r.readline()
         while line:
-            line = r.readline()
             yield line.strip("\n").strip("\r")
+            line = r.readline()
 
 
 # 读txt文件 一次全读完 返回list
