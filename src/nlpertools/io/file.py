@@ -6,6 +6,7 @@ import json
 import pickle
 import random
 import time
+from itertools import (takewhile, repeat)
 
 # import omegaconf
 # import yaml
@@ -29,6 +30,17 @@ def _merge_file(filelist, save_filename, shuffle=False):
 
 
 # file's io ----------------------------------------------------------------------
+def iter_count(file_name):
+    """
+    最快的文件行数统计，不知道和wc -l 谁快
+    author: unknown
+    """
+    buffer = 1024 * 1024
+    with codecs.open(file_name, 'r', 'utf-8') as f:
+        buf_gen = takewhile(lambda x: x, (f.read(buffer) for _ in repeat(None)))
+        return sum(buf.count('\n') for buf in buf_gen)
+
+
 # 读txt文件 一次全读完 返回list 去换行
 def readtxt_list_all_strip(path, encoding='utf-8'):
     lines = []
