@@ -7,6 +7,21 @@ import time
 from functools import wraps
 
 
+def fn_async_timer(function):
+    """
+    针对异步函数的装饰器
+    """
+    @wraps(function)
+    async def function_timer(*args, **kwargs):
+        t0 = time.time()
+        result = await function(*args, **kwargs)
+        t1 = time.time()
+        print('[finished {func_name} in {time:.2f}s]'.format(func_name=function.__name__, time=t1 - t0))
+        return result
+
+    return function_timer
+
+
 def fn_timer(analyse=False):
     def wrapper(func):
         def func_time(*args, **kwargs):
