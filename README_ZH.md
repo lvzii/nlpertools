@@ -31,6 +31,12 @@ nlpertools
 
 - [readthedoc 检查文档构建状况](https://readthedocs.org/projects/nlpertools/builds)
 
+- 发布版本需要加tag
+
+## 开发哲学
+针对读取文件的方法，是将一些参数直接写在函数里，以实现快速使用。
+
+
 ## Emample
 
 ```python
