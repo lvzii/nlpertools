@@ -236,6 +236,16 @@ def read_seq_res(path, labels):
     return text, raw_label, predict_label
 
 
+def convert_pic_dpi(path):
+    from PIL import Image
+
+    img = Image.open(path)
+    w, h = img.size
+    rate = 0.1
+    img = img.resize((int(w * rate), int(h * rate)))
+    img.save('test.jpg')  # （224，224）
+
+
 def kfold(corpus, path, k=9, is_shuffle=True):
     '''
     k是10份中训练集占了几份
