@@ -7,6 +7,8 @@ import re
 import string
 from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
+import math
+import datetime
 
 from .io.file import writetxt_w_list, writetxt_a
 # import numpy as np
@@ -22,6 +24,7 @@ from .utils.package import *
 
 CHINESE_PUNCTUATION = list('，。；：‘’“”！？《》「」【】<>（）、')
 ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
+OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
 def seed_everything():
@@ -265,6 +268,71 @@ def tf_idf(corpus, save_path):
     sorted_tfidf = sorted(tfidfdict.items(), key=lambda d: d[1], reverse=True)
     to_write = ['{} {}'.format(i[0], i[1]) for i in sorted_tfidf]
     writetxt_w_list(to_write, save_path, num_lf=1)
+
+
+class GaussDecay(object):
+    """
+    当前只实现了时间的，全部使用默认值
+    """
+
+    def __init__(self, origin='2022-08-02', scale='90d', offset='5d', decay=0.5, task="time"):
+        self.origin = origin
+        self.task = task
+        self.scale, self.offset = self.translate(scale, offset)
+        self.decay = decay
+        self.time_coefficient = 0.6
+        self.related_coefficient = 0.4
+
+    def translate(self, scale, offset):
+        """
+        将领域的输入转化为标准
+        :return:
+        """
+        if self.task == "time":
+            scale = 180
+            offset = 5
+        else:
+            scale = 180
+            offset = 5
+        return scale, offset
+
+    @staticmethod
+    def translated_minus(field_value):
+        origin = datetime.datetime.now()
+        field_value = datetime.datetime.strptime(field_value, '%Y-%m-%d %H:%M:%S')
+        return (origin - field_value).days
+
+    def calc_exp(self):
+        pass
+
+    def calc_liner(self):
+        pass
+
+    def calc_gauss(self, raw_score, field_value):
+        """
+        $$S(doc)=exp(-\frac{max(0,|fieldvalues_{doc}-origin|-offset)^2}{2σ^2})$$ -
+        $$σ^2=-scale^2/(2·ln(decay))$$
+        :param raw_score:
+        :param field_value:
+        :return:
+        """
+        numerator = max(0, (abs(self.translated_minus(field_value)) - self.offset)) ** 2
+        sigma_square = -1 * self.scale ** 2 / (2 * math.log(self.decay, math.e))
+        denominator = 2 * sigma_square
+        s = math.exp(-1 * numerator / denominator)
+        return round(self.time_coefficient * s + self.related_coefficient * raw_score, 7)
+
+
+if __name__ == '__main__':
+    gauss_decay = GaussDecay()
+    res = gauss_decay.calc_gauss(raw_score=1, field_value="2021-05-29 14:31:13")
+    print(res)
+    # res = gauss_decay.calc_gauss(raw_score=1, field_value="2022-05-29 14:31:13")
+    # print(res)
+    # res = gauss_decay.calc_gauss(raw_score=1, field_value="2022-05-29 14:31:13")
+    # print(res)
+    # res = gauss_decay.calc_gauss(raw_score=1, field_value="2022-05-29 14:31:13")
+    # print(res)
 
 # 常用函数参考
 # import tensorflow as tf
