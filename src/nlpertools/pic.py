@@ -19,7 +19,7 @@ def combine():
     import numpy as np
 
     from PIL import Image
-
+    # 这里是需要合并的图片路径
     paths = ["out{}.jpg".format(i) for i in range(1, 14)]
     img_array = ''
     img = ''
