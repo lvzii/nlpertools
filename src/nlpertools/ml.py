@@ -267,7 +267,8 @@ def kfold(corpus, path, k=9, is_shuffle=True):
         "labels": ["label_{}".format(i % 10) for i in range(100)]
     })
     train_idx, test_and_val_idx = KFold(n_splits=8, shuffle=True).split(df).__next__()
-    test_idx, val_idx = KFold(n_splits=2, shuffle=True).split(df).__next__()
+    df_test_and_val = df.iloc[test_and_val_idx]
+    test_idx, val_idx = KFold(n_splits=2, shuffle=True).split(df_test_and_val).__next__()
     df_train = df.iloc[train_idx]
     df_val = df.iloc[val_idx]
     df_test = df.iloc[test_idx]
