@@ -9,6 +9,7 @@ from .io.file import *
 from .ml import *
 from .openApi import *
 from .other import *
+from .pic import *
 from .plugin import *
 from .reminder import *
 from .utils_for_nlpertools import *

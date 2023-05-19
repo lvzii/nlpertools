@@ -16,6 +16,18 @@ nlpertools
  └── setup.cfg # used in pypi
 ```
 
+# Install 
+安装最新发布版本
+```bash
+pip install nlpertools
+```
+
+ 📢[推荐]安装最新git版本 
+```
+pip install git+https://github.com/lvzii/nlpertools
+```
+
+
 ## Document
 
 https://nlpertools.readthedocs.io/en/latest/
@@ -35,6 +47,10 @@ https://nlpertools.readthedocs.io/en/latest/
 - [git commit guide](https://blog.csdn.net/fd2025/article/details/124543690)
 
 - [readthedoc:check doc server status](https://readthedocs.org/projects/nlpertools/builds)
+
+## Development philosophy
+
+Write a function once, never write it twice!
 
 ## Emample
 
