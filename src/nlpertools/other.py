@@ -36,6 +36,40 @@ def seed_everything():
     torch.cuda.manual_seed_all(seed)
 
 
+def sent_email(mail_user, mail_pass, receiver, title, content, attach_path=None):
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from email.mime.application import MIMEApplication
+
+    mail_host = 'smtp.qq.com'
+    mail_user = mail_user
+    mail_pass = mail_pass
+    sender = mail_user
+
+    message = MIMEMultipart()
+    message.attach(MIMEText(content, 'plain', 'utf-8'))
+    if attach_path:
+        attachment = MIMEApplication(open(attach_path, 'rb').read())
+        attachment["Content-Type"] = 'application/octet-stream'
+        attachment.add_header('Content-Dispositon', 'attachment',
+                              filename=('utf-8', '', attach_path))  # 注意：此处basename要转换为gbk编码，否则中文会有乱码。
+        message.attach(attachment)
+    message['Subject'] = title
+    message['From'] = sender
+    message['To'] = receiver
+
+    try:
+        smtpObj = smtplib.SMTP()
+        smtpObj.connect(mail_host, 25)
+        smtpObj.login(mail_user, mail_pass)
+        smtpObj.sendmail(sender, receiver, message.as_string())
+        smtpObj.quit()
+        print('send email success')
+    except smtplib.SMTPException as e:
+        print('send failed', e)
+
+
 def convert_np_to_py(res):
     np2py = {
         np.float64: float,
@@ -81,18 +115,6 @@ def camel_to_snake(s: str) -> str:
     :return:
     """
     return reduce(lambda x, y: x + ('_' if y.isupper() else '') + y, s).lower()
-
-
-def identify_language(text):
-    language = langid.classify(text[:200])[0]
-    # print(language)
-    if language == 'zh':
-        return 'zh'
-    elif language == 'en':
-        return 'en'
-    else:
-        return 'other'
-    # return 'en'
 
 
 # other ----------------------------------------------------------------------
@@ -322,53 +344,6 @@ class GaussDecay(object):
         s = math.exp(-1 * numerator / denominator)
         return round(self.time_coefficient * s + self.related_coefficient * raw_score, 7)
 
-
-def generate_image(text1, text2, text3, text4, color1, color2, color3, color4):
-    # 不支持中文
-    from PIL import Image, ImageDraw, ImageFont
-
-    # Create image object with black background
-    # 创建黑色背景的图像对象
-    img = Image.new('RGB', (1920, 1080), color='black')
-
-    # Create draw object
-    # 创建绘图对象
-    draw = ImageDraw.Draw(img)
-
-    # Define font and font size
-    # 定义字体和字体大小
-    font = ImageFont.truetype('arial.ttf', size=100)
-
-    # Define text color
-    # 定义文本颜色
-    text_color = (255, 255, 255)
-
-    # Define rectangle coordinates
-    # 定义矩形坐标
-    rect1 = (0, 0, 960, 540)
-    rect2 = (960, 0, 1920, 540)
-    rect3 = (0, 540, 960, 1080)
-    rect4 = (960, 540, 1920, 1080)
-
-    # Draw rectangles
-    # 绘制矩形
-    draw.rectangle(rect1, fill=color1)
-    draw.rectangle(rect2, fill=color2)
-    draw.rectangle(rect3, fill=color3)
-    draw.rectangle(rect4, fill=color4)
-
-    # Draw text in rectangles
-    # 在矩形中绘制文本
-    draw.text((480, 270), text1, font=font, fill=text_color, anchor='mm')
-    draw.text((1440, 270), text2, font=font, fill=text_color, anchor='mm')
-    draw.text((480, 810), text3, font=font, fill=text_color, anchor='mm')
-    draw.text((1440, 810), text4, font=font, fill=text_color, anchor='mm')
-
-    # Save image
-    # 保存图像
-    img.save('generated_image.png')
-
-    generate_image('Text 1', 'Text 2', 'Text 3', 'Text 4', '#F0E68C', '#ADD8E6', '#98FB98', '#FFC0CB')
 
 if __name__ == '__main__':
     gauss_decay = GaussDecay()

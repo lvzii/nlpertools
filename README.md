@@ -1,6 +1,6 @@
 # Current version
 
-1.0.5
+1.0.6dev
 
 # Introduction
 
@@ -61,4 +61,8 @@ a = nlpertools.readtxt_list_all_strip('res.txt')
 # 或
 b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 ```
+
+## Contribution
+
+https://github.com/bigscience-workshop/data-preparation
 
