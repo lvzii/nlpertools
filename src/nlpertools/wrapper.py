@@ -5,7 +5,7 @@
 import logging
 import time
 from functools import wraps
-
+import asyncio
 
 def fn_async_timer(function):
     """
@@ -22,8 +22,23 @@ def fn_async_timer(function):
     return function_timer
 
 
-def fn_timer(analyse=False):
+def fn_timer(async_func=False, analyse=False):
+    """
+    >>> @fn_timer()
+    >>> def example():
+    >>>     time.sleep(2)
+    :param analyse:
+    :return:
+    """
+
     def wrapper(func):
+        async def func_time_async(*args, **kwargs):
+            t0 = time.time()
+            result = await asyncio.create_task(func(*args, **kwargs))
+            t1 = time.time()
+            print('[finished {func_name} in {time:.2f}s]'.format(func_name=func.__name__, time=t1 - t0))
+            return result
+
         def func_time(*args, **kwargs):
             t0 = time.time()
             result = func(*args, **kwargs)
@@ -43,10 +58,13 @@ def fn_timer(analyse=False):
             profiler.print()
             return result
 
-        if analyse:
-            return func_time_analyse
+        if async_func is True:
+            return func_time_async
         else:
-            return func_time
+            if analyse:
+                return func_time_analyse
+            else:
+                return func_time
 
     return wrapper
 
