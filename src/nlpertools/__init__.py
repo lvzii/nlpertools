@@ -15,6 +15,9 @@ from .reminder import *
 from .utils_for_nlpertools import *
 from .wrapper import *
 
-DB_CONFIG_FILE = "./default_db_config.yml"
+import os
+
+
+DB_CONFIG_FILE = os.path.join(os.path.dirname(__file__),"default_db_config.yml")
 
 __version__ = '1.0.5'

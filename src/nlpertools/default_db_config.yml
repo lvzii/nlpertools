@@ -25,18 +25,16 @@ redis:
 
 hbase:
   - # 配置
-  - TOPIC_NUM : "******"
+  - topic_num: "******"
   - # 默认配置
-  - DEFAULT_HOST : "******"
-  - DEFAULT_PORT : "******"
-  - # DEFAULT_TRANSPORT = "******"
-  - DEFAULT_TRANSPORT : "******"
-  - DEFAULT_COMPAT : "******"
-  - # DEFAULT_PROTOCOL = "******"
-  - DEFAULT_PROTOCOL : "******"
+  - default_host: "******"
+  - default_port: "******"
+  - default_transport: "******"
+  - default_compat: "******"
+  - default_protocol: "******"
 
 kafka:
-  bootstarp_server:
+  bootstrap_server:
     - "******"
     - "******"
     - "******"

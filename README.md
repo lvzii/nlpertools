@@ -2,7 +2,7 @@
   <h4 align="center">
       <p>
           <b>中文</b> |
-          <a href="https://github.com/lvzii/nlpertools/blob/main/README_ZH.md">English</a>
+          <a href="https://github.com/lvzii/nlpertools/blob/main/README_EN.md">English</a>
       </p>
   </h4>
 </div>
@@ -35,7 +35,7 @@ nlpertools
 
 - import都放在了utils/package.py里，通过脚本可自动生成
 
-- 类似paddle、ltp的import需要判断是否使用才import，因为import的时间太长，exapmle:
+- 类似paddle、ltp的import需要判断是否使用才import，因为import的时间太长，例如:
   ```python
   class STEM(object):
       from ltp import LTP
@@ -55,7 +55,7 @@ nlpertools
 
 原则是：写过一遍的函数，绝不写第二遍！
 
-## Emample
+## 
 
 ```python
 import nlpertools

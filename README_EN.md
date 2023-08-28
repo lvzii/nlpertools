@@ -27,14 +27,13 @@ nlpertools
 
 # Install
 
-安装最新发布版本
+Install the latest release version
 
 ```bash
 pip install nlpertools
 ```
 
-📢[推荐]安装最新git版本
-
+📢[ Recommend ] Install the latest git version
 ```
 pip install git+https://github.com/lvzii/nlpertools
 ```
