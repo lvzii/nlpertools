@@ -1,7 +1,7 @@
 <div align="center">
   <h4 align="center">
       <p>
-          <a href="https://github.com/lvzii/nlpertools/blob/main/README_ZH.md">中文</a> |
+          <a href="https://github.com/lvzii/nlpertools/blob/main/README.md">中文</a> |
           <b>English</b>
       </p>
   </h4>

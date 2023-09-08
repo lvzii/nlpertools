@@ -9,7 +9,7 @@ def j_mkdir(name):
     os.makedirs(name, exist_ok=True)
 
 
-def get_filename(path):
+def get_filename(path) -> str:
     '''
     返回路径最后的文件名
     :param path:

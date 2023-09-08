@@ -12,6 +12,8 @@ from itertools import (takewhile, repeat)
 # import yaml
 from ..utils.package import *
 
+LARGE_FILE_THRESHOLD = 1e5
+
 
 def read_yaml(path, omega=False):
     if omega:
@@ -41,17 +43,26 @@ def iter_count(file_name):
         return sum(buf.count('\n') for buf in buf_gen)
 
 
+# 需要加入进度条的函数包括
+"""
+readtxt_list_all_strip
+save_to_json
+load_from_json
+"""
+
+
 # 读txt文件 一次全读完 返回list 去换行
 def readtxt_list_all_strip(path, encoding='utf-8'):
+    file_line_num = iter_count(path)
     lines = []
-    t_start = time.time()
     with codecs.open(path, 'r', encoding) as r:
-        for ldx, line in enumerate(r.readlines()):
-            line = line.strip('\n').strip("\r")
-            lines.append(line)
-        if ldx > 1e5:
-            t_end = time.time()
-            print("read {} over, cos time {} ms".format(path, t_end - t_start))
+        if file_line_num > LARGE_FILE_THRESHOLD:
+            iter_obj = tqdm(enumerate(r.readlines()), total=file_line_num)
+        else:
+            iter_obj = enumerate(r.readlines())
+
+        for ldx, line in iter_obj:
+            lines.append(line.strip('\n').strip("\r"))
         return lines
 
 
@@ -209,15 +220,27 @@ def save_to_json(corpus, path):
 
 # line by line
 def load_from_json(path):
-    with open(path, 'r', encoding='utf-8') as rd:
-        corpus = []
-        while True:
-            line = rd.readline()
-            if line:
-                corpus.append(json.loads(line))
-            else:
-                break
-    return corpus
+    file_line_num = iter_count(path)
+    if file_line_num > 1e5:
+        with open(path, 'r', encoding='utf-8') as rd:
+            corpus = []
+            while True:
+                line = rd.readline()
+                if line:
+                    corpus.append(json.loads(line))
+                else:
+                    break
+        return corpus
+    else:
+        with open(path, 'r', encoding='utf-8') as rd:
+            corpus = []
+            while True:
+                line = rd.readline()
+                if line:
+                    corpus.append(json.loads(line))
+                else:
+                    break
+        return corpus
 
 
 def pickle_save(data, path):
