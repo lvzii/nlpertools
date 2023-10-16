@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
 import re
-from typing import List, Dict
+import string
+from typing import List
+
 import numpy as np
 
 # from . import DB_CONFIG_FILE # cannot import name 'DB_CONFIG_FILE' from partially initialized module 'nlpertools'
-from .io.file import read_yaml, readtxt_string
 from .utils.package import *
-
-import string
 
 main_special_characters = string.punctuation + string.digits + string.whitespace
 other_special_characters = (
@@ -266,7 +265,6 @@ class TextProcess(object):
 
     @staticmethod
     def _pre_complie_pattern(patterns_filter, patterns_replace):
-        from pprint import pprint
         complied_patterns_replace, complied_patterns_filter = [], []
         for i in patterns_filter:
             complied_patterns_filter.append(re.compile(i))
@@ -560,6 +558,30 @@ class CopyFunc():
 class EnTextProcess(object):
     pass
 
+
+def convert2markdown(table: list) -> str:
+    df = pd.DataFrame(table[1:], columns=table[0])
+
+    return df.to_markdown(index=False)
+
+
+def convert_fullwidth2_basic(sentence):
+    # 参照：https://fuhaoku.net/U+FF21
+    new_sentence = ""
+    for char in sentence:
+        if 65281 <= ord(char) <= 65374:
+            char = chr(ord(char) - 65248)
+        new_sentence += char
+    return new_sentence
+
+
+def convert_basic2fullwidth(sentence):
+    new_sentence = ""
+    for char in sentence:
+        if 33 <= ord(char) <= 126:
+            char = chr(ord(char) + 65248)
+        new_sentence += char
+    return new_sentence
 
 if __name__ == "__main__":
     pattern_for_filter = [
