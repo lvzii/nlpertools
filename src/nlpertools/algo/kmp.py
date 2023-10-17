@@ -22,6 +22,24 @@ def build(pattern_string):
     return backtrace_points
 
 
+def build_2(needle: str):
+    # 这写的比第一种简洁
+    # 查找方法也是自己，唯一就是判断结束条件，不是用-1了
+    m = len(needle)
+    if m == 0:
+        return 0
+
+    pi = [0] * m
+    j = 0
+    for i in range(1, m):
+        while j > 0 and needle[i] != needle[j]:
+            j = pi[j - 1]
+        if needle[i] == needle[j]:
+            j += 1
+        pi[i] = j
+    return pi
+
+
 def find_after_build(main_string, pattern_string):
     backtracker = build(pattern_string)
     # print(backtracker)
@@ -62,13 +80,15 @@ def find(main_string, pattern_string):
 
 
 if __name__ == '__main__':
-    test_main_string = "a"
-    test_pattern_string = "a"
+    test_main_string = "abababc"
+    test_pattern_string = "abababc"
 
-    # res = build(test_pattern_string)
-    # print(res)
+    res = build(test_pattern_string)
+    print(res)
+    res = build_2(test_pattern_string)
+    print(res)
     # res = find(test_main_string, test_pattern_string)
     # print(res)
-
-    res = find_after_build(test_main_string, test_pattern_string)
-    print(res)
+    #
+    # res = find_after_build(test_main_string, test_pattern_string)
+    # print(res)
