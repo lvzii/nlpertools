@@ -39,6 +39,17 @@ class OtherLookup:
     def prometheus_demo(self):
         return
 
+    def load_two_dataset(self):
+        from datasets import interleave_datasets
+        from itertools import islice
+        en_dataset = load_dataset('oscar', "unshuffled_deduplicated_en", split='train', streaming=True)
+        fr_dataset = load_dataset('oscar', "unshuffled_deduplicated_fr", split='train', streaming=True)
+        multilingual_dataset = interleave_datasets([en_dataset, fr_dataset])
+        print(list(islice(multilingual_dataset, 2)))
+        multilingual_dataset_with_oversampling = interleave_datasets([en_dataset, fr_dataset], probabilities=[0.8, 0.2],
+                                                                     seed=42)
+        print(list(islice(multilingual_dataset_with_oversampling, 2)))
+
     """
     import prometheus_client
     from flask import Response, Flask, request

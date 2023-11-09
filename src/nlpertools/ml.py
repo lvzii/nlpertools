@@ -5,7 +5,6 @@ import random
 
 from .io.dir import j_mkdir
 from .io.file import readtxt_list_all_strip, writetxt_w_list, save_to_csv
-
 # import numpy as np
 # import seaborn as sns
 # import torch
@@ -19,26 +18,37 @@ from .utils.package import *
 
 
 def calc_llm_train_activation_memory(
-    model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num
+    model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num, gpu_num=1
 ):
+
     """
-    仅仅针对transformer结构
-    reference: https://zhuanlan.zhihu.com/p/665172400
-    return GB
+    return bytes
+
+    reference:
+    1. https://zhuanlan.zhihu.com/p/665172400
+    2. https://deepspeed.readthedocs.io/en/latest/memory.html#discussion 里面没有乘以层数就很怪
     """
+    # reference1
     # attention
     # FFN
     # Layer Norm
-    return (
+    r1 = (
         sequence_length
         * batch_size
         * hidden_dim
         * lay_number
         * (34 + 5 * attention_heads_num * sequence_length / hidden_dim)
-        / 1024
-        / 1024
-        / 1024
     )
+    # reference2
+    r2 = (
+        lay_number*(2 * sequence_length * attention_heads_num + 16 * hidden_dim)
+        * sequence_length
+        * batch_size
+        / gpu_num
+    )
+    print(r1)
+    print(r2)
+    return r1
 
 
 class DataAnalysis:
@@ -288,14 +298,15 @@ def kfold_txt(corpus, path, k=9, is_shuffle=True):
     writetxt_w_list(dev_set, os.path.join(path, "dev.tsv"), num_lf=1)
 
 
-def kfold_df(df: pd.DataFrame, save_dir=None):
+def kfold_df(df, save_dir=None):
     """
     划分train test val集， 写为windows可读的csv。
-    :param df:
+    :param df:pd.DataFrame
     :param save_dir:
     :return:
     """
     from sklearn.model_selection import KFold
+    import pandas as pd
 
     train_idx, test_and_val_idx = KFold(n_splits=8, shuffle=True).split(df).__next__()
     df_test_and_val = df.iloc[test_and_val_idx]
@@ -456,6 +467,17 @@ def seed_everything(seed=7777777) -> None:
 
 
 if __name__ == "__main__":
-    stem = STEM(IPT_MODEL_PATH)
-    test_sentence = "美国袭击伊拉克"
-    a = stem.start_by_srl(test_sentence)
+    # stem = STEM(IPT_MODEL_PATH)
+    # test_sentence = "美国袭击伊拉克"
+    # a = stem.start_by_srl(test_sentence)
+
+    res = calc_llm_train_activation_memory(
+        model_name="",
+        sequence_length=2048,
+        batch_size=1,
+        hidden_dim=4096,
+        lay_number=28,
+        attention_heads_num=32,
+        gpu_num=1
+    )
+    print(res, "G")

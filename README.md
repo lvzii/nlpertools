@@ -43,6 +43,12 @@ nlpertools
       def __init__(self, IPT_MODEL_PATH):
           self.ltp = LTP(IPT_MODEL_PATH)
   ```
+  通过pyinstrument判断，超过1s的包即采用这种方式
+  - 2s+ happybase、seaborn、torch、jieba
+  - 1s+
+  - 0.5s+ pandas elasticsearch transformers xgboost nltk mongo
+
+
 - [git commit guide](https://blog.csdn.net/fd2025/article/details/124543690)
 
 - [readthedoc 检查文档构建状况](https://readthedocs.org/projects/nlpertools/builds)

@@ -1,10 +1,11 @@
 #!/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
-from ..utils.package import sns, plt
+from ..utils.package import  plt
 
 
 def confused_matrix(confuse_matrix):
+    import seaborn as sns
     sns.set()
     f, ax = plt.subplots()
     ticklabels = ["l1", "l2", "l31"]

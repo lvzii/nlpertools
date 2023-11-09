@@ -43,6 +43,7 @@ class MysqlOps(object):
 
 
 class EsOps(object):
+    from elasticsearch import Elasticsearch, helpers
     def __init__(self, config=global_db_config["es"]):
         self.es = Elasticsearch(
             host=config["host"], timeout=config["timeout"])
@@ -60,6 +61,14 @@ class EsOps(object):
         all_data = [i["_source"] for i in all_data]
         return all_data
 
+    def search_roll_iter(self, index, body):
+        data = self.es.search(index=index, body=body, scroll="5m")
+        scroll_id = data["_scroll_id"]
+        while data["hits"]["hits"]:
+            yield data["hits"]["hits"]
+            data = self.es.scroll(scroll_id=scroll_id, scroll="5m")
+            scroll_id = data["_scroll_id"]
+
     def search(self, index, body):
         return self.es.search(index=index, body=body)
 
@@ -70,8 +79,29 @@ class EsOps(object):
         # data里有index
         helpers.bulk(self.es, data)
 
+    def delete_data_by_query(self, index, _project_id, _source_ids):
+        _query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"terms": {"source_id": _source_ids}},
+                        {"term": {"project_id": _project_id}},
+                    ]
+                }
+            }
+        }
+        _res = self.es.delete_by_query(index=index, body=_query)
+        print(f"delete_data_by_query: {_res}")
+
+    def batch_re_save(self, index, _data, _project_id, _source_ids):
+        self.delete_data_by_query(_project_id, _source_ids)
+        _action = [{"_index": index, "_source": i} for i in _data]
+        _res = helpers.bulk(self.es, _action)
+        print(f"批量保存数据： {_res}")
+
 
 class MongoOps(object):
+    from pymongo import MongoClient
     def __init__(self, config=global_db_config["mongo"]):
         mongo_client = MongoClient(config["uri"])
         db = mongo_client[config["db"]]
@@ -168,12 +198,13 @@ class MongoOps(object):
 
 class RedisOps(object):
     def __init__(self, config=global_db_config["redis"]):
-        REDIS_MAX_CONNECTIONS = 1024
+        redis_max_connections = 1024
         REDIS_GET_TIMEOUT = 0.1
-        self.redis = aioredis.from_url(config["uri"], max_connections=REDIS_MAX_CONNECTIONS)
+        self.redis = aioredis.from_url(config["uri"], max_connections=redis_max_connections)
 
 
 class HBaseOps(object):
+    import happybase
     """
     demo
     key = 'test'
@@ -273,7 +304,11 @@ class HBaseOps(object):
         self.conn.close()
 
 
-class KafkaOps():
+class KafkaConfig():
+    pass
+
+
+class KafkaOps(object):
     def __init__(self, config=global_db_config["kafka"]):
         self.bootstrap_server = config["bootstrap_server"]
         self.topic = config["topic"]
@@ -295,3 +330,42 @@ class KafkaOps():
         for msg in consumer:
             recv = "%s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition, msg.offset, msg.key, msg.value)
             print(recv)
+
+
+
+
+class MilvusOps(object):
+    def __init__(self, config=global_db_config.milvus):
+        from pymilvus import connections, Collection
+
+        connections.connect("default", host=config.host, port=config.port)
+        self.collection = Collection(config.collection)
+        self.collection.load()
+
+    def get_similarity(self, embedding):
+        search_params = {
+            "metric_type": "L2",
+            "params": {"nprobe": 1},
+        }
+        # # %%
+        logger.debug(embedding)
+        result = self.collection.search(
+            [list(embedding)],
+            "vec",
+            search_params,
+            limit=3,
+            output_fields=["pk", "entity_name", "standard_entity_name"],
+        )
+        hits = result[0]
+        entities = []
+        for hit in hits:
+            entities.append(
+                {
+                    "name": hit.entity.get("entity_name"),
+                    "standard_name": hit.entity.get("standard_entity_name"),
+                }
+            )
+        return entities
+
+    # def insert(self, collection, entities):
+    #     collection.insert(entities)
