@@ -13,12 +13,12 @@ def memory_monitor():
         total = round(mem.total / 1024 / 1024 / 1024, 2)
         available = round(mem.available / 1024 / 1024 / 1024, 2)
         # 将内存使用情况写入文件
-        with open("mem_usage.txt", "a") as f:
+        with open("mem_usage_cpu.txt", "a") as f:
             f.write(f"{current_time} - Total: {total}, Available: {available}\n")
 
-        # 等待10秒钟
-        time.sleep(60)
+        time.sleep(10)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    print("start cpu memory monitor!")
     memory_monitor()
