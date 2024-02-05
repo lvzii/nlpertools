@@ -7,3 +7,8 @@ def foo(num):
 
 def foo2(num):
     return num & (num - 1)
+
+
+def _lowbit(index: int) -> int:
+    #
+    return index & -index
