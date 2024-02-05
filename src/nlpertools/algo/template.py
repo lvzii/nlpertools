@@ -1,9 +1,7 @@
 #!/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
-import heapq
-from collections import defaultdict, deque, Counter
-from typing import List, Optional
+from collections import defaultdict
 
 
 # from sortedcontainers import SortedDict, SortedList
@@ -17,6 +15,7 @@ class SegmentTree:
     性质：线段树的每一个树节点其实都存储了一个「区间（段）的信息」
     通过add添加
     """
+
     pass
 
 
@@ -72,9 +71,46 @@ class BITUsageDemo:
         return self.bit.sumRange(x, y)
 
 
-if __name__ == '__main__':
+class Trie:
+    def __init__(self):
+        self.children = [None] * 26
+        self.isEnd = False
+
+    def insert(self, word: str) -> None:
+        node = self
+        for ch in word:
+            ch = ord(ch) - ord("a")
+            if not node.children[ch]:
+                node.children[ch] = Trie()
+            node = node.children[ch]
+        node.isEnd = True
+
+    def search_prefix(self, prefix: str):
+        node = self
+        for ch in prefix:
+            ch = ord(ch) - ord("a")
+            if not node.children[ch]:
+                return None
+            node = node.children[ch]
+
+        return node
+
+    def search(self, word: str) -> bool:
+        node = self.search_prefix(word)
+        return node is not None and node.isEnd
+
+    def starts_with(self, prefix: str) -> bool:
+        return self.search_prefix(prefix) is not None
+
+
+if __name__ == "__main__":
     bit_usage_demo = BITUsageDemo()
     bit_usage_demo.add(1)
     bit_usage_demo.add(2)
     res = bit_usage_demo.query(1, 2)
     print(res)
+    # 前缀树
+    # obj = Trie()
+    # obj.insert(word)
+    # param_2 = obj.search(word)
+    # param_3 = obj.startsWith(prefix)
