@@ -39,6 +39,7 @@ def imgrate_files(path):
 
 def case_sensitive_path_exists(path: str, relative_path=False):
     """
+    https://juejin.cn/post/7316725867086692391
     Check if the path exists in a case-sensitive manner.
     """
     # 构造成Path
