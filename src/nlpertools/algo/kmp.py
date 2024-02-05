@@ -29,15 +29,15 @@ def build_2(needle: str):
     if m == 0:
         return 0
 
-    pi = [0] * m
-    j = 0
-    for i in range(1, m):
-        while j > 0 and needle[i] != needle[j]:
-            j = pi[j - 1]
-        if needle[i] == needle[j]:
-            j += 1
-        pi[i] = j
-    return pi
+    pmt = [0] * m
+    pattern_pointer = 0
+    for main_pointer in range(1, m):
+        while pattern_pointer > 0 and needle[main_pointer] != needle[pattern_pointer]:
+            pattern_pointer = pmt[pattern_pointer - 1]
+        if needle[main_pointer] == needle[pattern_pointer]:
+            pattern_pointer += 1
+        pmt[main_pointer] = pattern_pointer
+    return pmt
 
 
 def find_after_build(main_string, pattern_string):
