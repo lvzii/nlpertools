@@ -8,7 +8,21 @@ def convert_pic_dpi(path):
     w, h = img.size
     rate = 0.1
     img = img.resize((int(w * rate), int(h * rate)))
-    img.save('test.jpg')  # （224，224）
+    img.save("test.jpg")  # （224，224）
+
+
+def invert_colors(image_path, output_path):
+    from PIL import Image, ImageOps
+    image = Image.open(image_path)
+    black_and_white = image.convert("L")
+
+    # 对调黑白颜色
+    inverted = ImageOps.invert(black_and_white)
+
+    # 保存修改后的图片
+    inverted.save(output_path)
+
+
 
 
 def pdf2pic(path):
@@ -19,7 +33,7 @@ def pdf2pic(path):
     # 保存
     num = 1
     for page in pages:
-        page.save('out{}.jpg'.format(num), 'JPEG')
+        page.save("out{}.jpg".format(num), "JPEG")
         num += 1
 
 
@@ -27,10 +41,11 @@ def concat_image():
     import numpy as np
 
     from PIL import Image
+
     # 这里是需要合并的图片路径
     paths = ["out{}.jpg".format(i) for i in range(1, 14)]
-    img_array = ''
-    img = ''
+    img_array = ""
+    img = ""
     for i, v in enumerate(paths):
         if i == 0:
             img = Image.open(v)  # 打开图片
@@ -42,8 +57,7 @@ def concat_image():
             img = Image.fromarray(img_array)
 
     # 保存图片
-    img.save('图1.jpg')
-
+    img.save("图1.jpg")
 
 
 class DrawDesktopBackground:
@@ -56,7 +70,7 @@ class DrawDesktopBackground:
         # '#1a4b61', '#f47678', '#79a863', '#a8a8a8'
         # Create image object with black background
         # 创建黑色背景的图像对象
-        img = Image.new('RGB', (1920, 1080), color='black')
+        img = Image.new("RGB", (1920, 1080), color="black")
 
         # Create draw object
         # 创建绘图对象
@@ -64,7 +78,7 @@ class DrawDesktopBackground:
 
         # Define font and font size
         # 定义字体和字体大小
-        font = ImageFont.truetype('arial.ttf', size=100)
+        font = ImageFont.truetype("arial.ttf", size=100)
 
         # Define text color
         # 定义文本颜色
@@ -88,19 +102,20 @@ class DrawDesktopBackground:
         # img = img.crop(box=(2, 2, 1919, 1079))
         # Draw text in rectangles
         # 在矩形中绘制文本
-        draw.text((480, 270), text1, font=font, fill=text_color, anchor='mm')
-        draw.text((1440, 270), text2, font=font, fill=text_color, anchor='mm')
-        draw.text((480, 810), text3, font=font, fill=text_color, anchor='mm')
-        draw.text((1440, 810), text4, font=font, fill=text_color, anchor='mm')
+        draw.text((480, 270), text1, font=font, fill=text_color, anchor="mm")
+        draw.text((1440, 270), text2, font=font, fill=text_color, anchor="mm")
+        draw.text((480, 810), text3, font=font, fill=text_color, anchor="mm")
+        draw.text((1440, 810), text4, font=font, fill=text_color, anchor="mm")
 
         # Save image
         # 保存图像
-        img.save('generated_image.png')
+        img.save("generated_image.png")
 
         # generate_image('Text 1', 'Text 2', 'Text 3', 'Text 4', '#F0E68C', '#ADD8E6', '#98FB98', '#FFC0CB')
 
-
-    def generate_image_style_2(text1, text2, text3, text4, color1, color2, color3, color4):
+    def generate_image_style_2(
+        text1, text2, text3, text4, color1, color2, color3, color4
+    ):
         # 不支持中文
         # 样式参考 https://zhuanlan.zhihu.com/p/365624498
         from PIL import Image, ImageDraw, ImageFont
@@ -117,13 +132,19 @@ class DrawDesktopBackground:
         # 文本距离小框的上边距
         text_up_margin = 12
         font_size = 65
-        width, height, margin, text_up_margin, text_left_margin, font_size = width * rate, height * rate, margin * rate, text_up_margin * rate, text_left_margin * rate, int(
-            font_size * rate)
+        width, height, margin, text_up_margin, text_left_margin, font_size = (
+            width * rate,
+            height * rate,
+            margin * rate,
+            text_up_margin * rate,
+            text_left_margin * rate,
+            int(font_size * rate),
+        )
         # Define font
-        font = ImageFont.truetype('arial.ttf', size=font_size)
+        font = ImageFont.truetype("arial.ttf", size=font_size)
 
         # Create drawing object
-        img = Image.new('RGB', (bg_width, bg_height), color='white')
+        img = Image.new("RGB", (bg_width, bg_height), color="white")
         draw = ImageDraw.Draw(img)
 
         # Draw rectangles
@@ -140,30 +161,39 @@ class DrawDesktopBackground:
         small_rect1 = (0, margin, width, height + margin)
         small_rect2 = (bg_width - width, margin, bg_width, height + margin)
         small_rect3 = (0, bg_height - margin - height, width, bg_height - margin)
-        small_rect4 = (bg_width - width, bg_height - margin - height, bg_width, bg_height - margin)
-        draw.rectangle(small_rect1, fill='white')
-        draw.rectangle(small_rect2, fill='white')
-        draw.rectangle(small_rect3, fill='white')
-        draw.rectangle(small_rect4, fill='white')
+        small_rect4 = (
+            bg_width - width,
+            bg_height - margin - height,
+            bg_width,
+            bg_height - margin,
+        )
+        draw.rectangle(small_rect1, fill="white")
+        draw.rectangle(small_rect2, fill="white")
+        draw.rectangle(small_rect3, fill="white")
+        draw.rectangle(small_rect4, fill="white")
 
         # Draw text in rectangles
         text_point1 = (text_left_margin, margin + text_up_margin)
         text_point2 = (text_left_margin + bg_width - width, margin + text_up_margin)
         text_point3 = (text_left_margin, bg_height - margin - height + text_up_margin)
-        text_point4 = (text_left_margin + bg_width - width, bg_height - margin - height + text_up_margin)
+        text_point4 = (
+            text_left_margin + bg_width - width,
+            bg_height - margin - height + text_up_margin,
+        )
         draw.text(text_point1, text1, font=font, fill=color1)
         draw.text(text_point2, text2, font=font, fill=color2)
         draw.text(text_point3, text3, font=font, fill=color3)
         draw.text(text_point4, text4, font=font, fill=color4)
 
         # Save image
-        img.save('generated_image.png')
+        img.save("generated_image.png")
 
         # generate_image('OpenSource', 'Doing', 'Fixed', 'Tmp',
         #            "#1a4b61", "#a8a8a8", "#f47678", "#fad048")
 
-
-    def generate_image_style_3(text1, text2, text3, bg_color, rec_color, text_color, pic):
+    def generate_image_style_3(
+        text1, text2, text3, bg_color, rec_color, text_color, pic
+    ):
         # 样式参考小红书 http://xhslink.com/f1JBTp
         from PIL import Image, ImageDraw, ImageFont
 
@@ -175,10 +205,10 @@ class DrawDesktopBackground:
         text_rec_distance = 20
         font_size = int(font_size * rate)
         # Define font
-        font = ImageFont.truetype('arial.ttf', size=font_size)
+        font = ImageFont.truetype("arial.ttf", size=font_size)
 
         # Create drawing object
-        img = Image.new('RGB', (bg_width, bg_height), color=bg_color)
+        img = Image.new("RGB", (bg_width, bg_height), color=bg_color)
         draw = ImageDraw.Draw(img)
 
         margin_up = 60
@@ -191,7 +221,12 @@ class DrawDesktopBackground:
 
         rec1_x, rec1_y = margin_left, margin_up
         rec2_x, rec2_y = rec1_x + rec1_width + rec_rec_distance, rec1_y
-        rec3_x, rec3_y, rec3_width, rec3_height = rec2_x, rec2_y + rec2_height + rec_rec_distance, -1, -1
+        rec3_x, rec3_y, rec3_width, rec3_height = (
+            rec2_x,
+            rec2_y + rec2_height + rec_rec_distance,
+            -1,
+            -1,
+        )
         im_width = im_height = 600
 
         # Insert Pic
@@ -216,12 +251,13 @@ class DrawDesktopBackground:
         draw.text(text_point3, text3, font=font, fill=text_color)
 
         # Save image
-        img.save('generated_image.png')
+        img.save("generated_image.png")
 
         # generate_image_style_3('· OpenSource ·', '· Doing ·', '· Fixed ·',
         #                        "#e8e8e8", "#dfdfdf", "#707070", "cat.jpg")
 
-
     def generate_from_pic():
         # 通过版面识别识别出框所在的位置，
         pass
+
+
