@@ -8,3 +8,5 @@ src/upload_for_pypi
 vene/
 
 __pycache__/
+
+src/test.py

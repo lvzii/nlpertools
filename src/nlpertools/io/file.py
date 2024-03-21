@@ -7,7 +7,7 @@ import pickle
 import random
 import time
 from itertools import (takewhile, repeat)
-
+import pandas as pd
 # import omegaconf
 # import yaml
 from ..utils.package import *
@@ -258,3 +258,27 @@ def save_to_csv(df, save_path, index_flag=False):
     with open(save_path, 'wb+') as csvfile:
         csvfile.write(codecs.BOM_UTF8)
     df.to_csv(save_path, mode='a', index=index_flag)
+
+
+def save_to_mongo():
+    # fake
+    """
+    示例
+
+    """
+    pass
+
+def load_from_mongo():
+    pass
+
+
+def unmerge_cells_df(df) -> pd.DataFrame:
+    for column in df.columns:
+        values = []
+        for i in df[column]:
+            if pd.isna(i):
+                values.append(values[-1])
+            else:
+                values.append(i)
+        df[column] = values
+    return df
