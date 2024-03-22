@@ -155,12 +155,12 @@ def writetxt_a_2list(list, path):
             writetxt_a_list(i, path)
 
 
-def SaveToJson(content, path):
+def save_to_json(content, path):
     with codecs.open(path, "w", "utf-8") as w:
         json.dump(content, w, ensure_ascii=False, indent=1)
 
 
-def LoadFromJson(path):
+def load_from_json(path):
     with codecs.open(path, "r", "utf-8") as r:
         content = json.load(r)
         return content
@@ -211,7 +211,7 @@ def readtxt_list_all_encoding(path):
 
 
 # line by line
-def save_to_json(corpus, path):
+def save_to_jsonl(corpus, path):
     with open(path, 'w', encoding='utf-8') as wt:
         for i in corpus:
             wt.write(json.dumps(i, ensure_ascii=False))
@@ -219,7 +219,7 @@ def save_to_json(corpus, path):
 
 
 # line by line
-def load_from_json(path):
+def load_from_jsonl(path):
     file_line_num = iter_count(path)
     if file_line_num > 1e5:
         with open(path, 'r', encoding='utf-8') as rd:
