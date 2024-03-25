@@ -1,6 +1,9 @@
 #!/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
+from io import BytesIO
+
+
 def convert_pic_dpi(path):
     from PIL import Image
 
@@ -11,8 +14,30 @@ def convert_pic_dpi(path):
     img.save("test.jpg")  # （224，224）
 
 
+def image2binary(image):
+    """
+    image: PIL.image
+    """
+    # 假设你已经有了一个Image对象
+    # image = Image.open('a.png')
+    # 创建一个BytesIO对象来保存二进制数据
+    buffered = BytesIO()
+    # 保存Image对象到BytesIO对象，确保使用正确的格式
+    image.save(buffered, format="JPEG")
+    # 获取二进制数据
+    binary_data = buffered.getvalue()
+    # 确保输出缓冲区被重置，以便后续使用
+    buffered.seek(0)
+    # 现在，binary_data包含了完整的JPEG图像数据
+    # 你可以将这个数据发送到网络请求，或者保存到文件
+    # with open('aa.jpg', 'wb') as f:
+    #     f.write(binary_data)
+    return binary_data
+
+
 def invert_colors(image_path, output_path):
     from PIL import Image, ImageOps
+
     image = Image.open(image_path)
     black_and_white = image.convert("L")
 
@@ -21,8 +46,6 @@ def invert_colors(image_path, output_path):
 
     # 保存修改后的图片
     inverted.save(output_path)
-
-
 
 
 def pdf2pic(path):
@@ -259,5 +282,3 @@ class DrawDesktopBackground:
     def generate_from_pic():
         # 通过版面识别识别出框所在的位置，
         pass
-
-
