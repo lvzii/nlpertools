@@ -31,6 +31,23 @@ nlpertools
 
 ```
 
+# 安装
+
+Install the latest release version
+
+```bash
+pip install nlpertools
+```
+
+📢[ 推荐 ] 安装git最新版本
+```
+pip install git+https://github.com/lvzii/nlpertools
+```
+
+## 文档
+
+https://nlpertools.readthedocs.io/en/latest/
+
 ## 开发指南
 
 - import都放在了utils/package.py里，通过脚本可自动生成
@@ -63,7 +80,7 @@ nlpertools
 
 一些可能需要配置才能用的函数，写上示例
 
-## 
+## 使用示例
 
 ```python
 import nlpertools
@@ -71,4 +88,9 @@ import nlpertools
 a = nlpertools.readtxt_list_all_strip('res.txt')
 # 或
 b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
+```
+
+```bash
+# 监控gpu显存
+python -m nlpertools
 ```
