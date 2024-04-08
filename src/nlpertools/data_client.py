@@ -28,8 +28,24 @@ class Neo4jOps(object):
     NEO4J_TIMEOUT = 0.3
     pass
 
+class SqliteOps(object):
+    import sqlite3
+    database_path = r'xx.db'
+    conn = sqlite3.connect(database_path)
+    c = conn.cursor()
+    sql = "select name from sqlite_master where type='table' order by name"
+    c.execute(sql)
+    print(c.fetchall())
+    sql = "select * from typecho_contents"
+    c.execute(sql)
+    res = c.fetchall()
+    print(res[3])
+
+    conn.commit()
+    conn.close()
 
 class MysqlOps(object):
+    import pandas as pd
     def __init__(self, config=global_db_config["mysql"]):
         self.db = pymysql.connect(host=config["host"],
                                   port=config["port"],
