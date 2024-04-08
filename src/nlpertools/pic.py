@@ -84,6 +84,7 @@ def concat_image():
 
 
 class DrawDesktopBackground:
+    @staticmethod
     def generate_image(text1, text2, text3, text4, color1, color2, color3, color4):
         # 不支持中文
         # 样式参考 https://zhuanlan.zhihu.com/p/365624498
@@ -136,6 +137,7 @@ class DrawDesktopBackground:
 
         # generate_image('Text 1', 'Text 2', 'Text 3', 'Text 4', '#F0E68C', '#ADD8E6', '#98FB98', '#FFC0CB')
 
+    @staticmethod
     def generate_image_style_2(
         text1, text2, text3, text4, color1, color2, color3, color4
     ):
@@ -214,6 +216,7 @@ class DrawDesktopBackground:
         # generate_image('OpenSource', 'Doing', 'Fixed', 'Tmp',
         #            "#1a4b61", "#a8a8a8", "#f47678", "#fad048")
 
+    @staticmethod
     def generate_image_style_3(
         text1, text2, text3, bg_color, rec_color, text_color, pic
     ):
@@ -279,6 +282,7 @@ class DrawDesktopBackground:
         # generate_image_style_3('· OpenSource ·', '· Doing ·', '· Fixed ·',
         #                        "#e8e8e8", "#dfdfdf", "#707070", "cat.jpg")
 
+    @staticmethod
     def generate_from_pic():
         # 通过版面识别识别出框所在的位置，
         pass
