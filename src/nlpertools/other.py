@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 import math
 import datetime
-import time
+import psutil
 from .io.file import writetxt_w_list, writetxt_a
 # import numpy as np
 # import psutil
@@ -27,10 +27,8 @@ ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
-
-
-
 def seed_everything():
+    import torch
     # seed everything
     seed = 7777777
     np.random.seed(seed)
@@ -63,27 +61,25 @@ def sent_email(mail_user, mail_pass, receiver, title, content, attach_path=None)
     message['To'] = receiver
 
     try:
-        smtpObj = smtplib.SMTP()
-        smtpObj.connect(mail_host, 25)
-        smtpObj.login(mail_user, mail_pass)
-        smtpObj.sendmail(sender, receiver, message.as_string())
-        smtpObj.quit()
+        smtp_obj = smtplib.SMTP()
+        smtp_obj.connect(mail_host, 25)
+        smtp_obj.login(mail_user, mail_pass)
+        smtp_obj.sendmail(sender, receiver, message.as_string())
+        smtp_obj.quit()
         print('send email success')
     except smtplib.SMTPException as e:
         print('send failed', e)
 
 
-def convert_np_to_py(res):
-    np2py = {
-        np.float64: float,
-        np.int32: int
-    }
-    news_dict = {}
-    for k, v in res.best_params_.items():
-        if type(v) in np2py:
-            v = np2py[type(v)](v)
-            news_dict[k] = v
-    return news_dict
+def convert_np_to_py(obj):
+    if isinstance(obj, dict):
+        return {k: convert_np_to_py(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_np_to_py(v) for v in obj]
+    elif isinstance(obj, np.float64) or isinstance(obj, np.float32):
+        return float(obj)
+    else:
+        return obj
 
 
 def git_push():
@@ -94,9 +90,9 @@ def git_push():
     while 1:
         num += 1
         print("retry num: {}".format(num))
-        res = os.system("git push --set-upstream origin main")
-        print(str(res))
-        if not str(res).startswith("fatal"):
+        info = os.system("git push --set-upstream origin main")
+        print(str(info))
+        if not str(info).startswith("fatal"):
             print("scucess")
             break
 
@@ -153,7 +149,7 @@ def dupl_dict(dict_list, key):
 
 def multi_thread_run(_task, data):
     with ThreadPoolExecutor() as executor:
-        result = list(tqdm(executor.map(_task, data), total=len(ata)))
+        result = list(tqdm(executor.map(_task, data), total=len(data)))
     return result
 
 
@@ -186,7 +182,7 @@ def spider(url):
 
 
 def eda(sentence):
-    url = 'http://x.x.x.x:x/eda'
+    url = 'https://x.x.x.x:x/eda'
     json_data = dict({"sentence": sentence})
     res = requests.post(url, json=json_data)
     return res.json()['eda']
