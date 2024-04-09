@@ -148,13 +148,6 @@ def writetxt_a_list(list, path, num_lf=2):
             w.write("\n" * num_lf)
 
 
-# 写二维list 追加
-def writetxt_a_2list(list, path):
-    with codecs.open(path, 'a', "utf-8") as w:
-        for i in list:
-            writetxt_a_list(i, path)
-
-
 def save_to_json(content, path):
     with codecs.open(path, "w", "utf-8") as w:
         json.dump(content, w, ensure_ascii=False, indent=1)
