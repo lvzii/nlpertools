@@ -258,13 +258,13 @@ class TextProcess(object):
         """
         pattern_list:
         """
-        self.patterns_filter, self.patterns_replace = self._pre_complie_pattern(
+        self.patterns_filter, self.patterns_replace = self._pre_compile_pattern(
             patterns_filter, patterns_replace
         )
         self.words_filter = words_filter
 
     @staticmethod
-    def _pre_complie_pattern(patterns_filter, patterns_replace):
+    def _pre_compile_pattern(patterns_filter, patterns_replace):
         complied_patterns_replace, complied_patterns_filter = [], []
         for i in patterns_filter:
             complied_patterns_filter.append(re.compile(i))
@@ -315,6 +315,8 @@ class TextProcess(object):
         return text
 
     def remove_stopwords(self, text):
+        import jieba
+
         new_tokens = []
         if self.language == "en":
             tokens = text.split(" ")
@@ -373,6 +375,8 @@ class TextProcess(object):
         return sentences
 
     def cut_word(self, text, language):
+        import jieba
+
         if language == "en":
             tokens = text.split(" ")
         else:
@@ -523,7 +527,17 @@ class TextProcess(object):
             text = re.sub(pattern, replace, text)
         return text
 
-
+    def calc_proportion_zh(self,text):
+        text = text.strip()
+        # 如果是中国英文的情况，并且英文有空格分开
+        if " " in text:
+            pass
+        chinese_count = 0
+        for char in text:
+            if '\u4e00' <= char <= '\u9fff':
+                chinese_count += 1
+            else:
+                pass
 class CopyFunc():
     # from https://github.com/lemon234071/clean-dialog
     def is_chinese_char(cp):
