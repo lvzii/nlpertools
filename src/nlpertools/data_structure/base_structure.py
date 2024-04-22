@@ -45,6 +45,9 @@ class TreeNode:
             self.left = left
             self.right = right
 
+    def build_from_list(self):
+        pass
+
     def __str__(self):
         pass
 
@@ -61,6 +64,31 @@ class TreeNode:
             node = node.right
         return res
 
+    def level_order(self, node):
+        # 层序遍历
+        # 直观觉得递归不行，采用迭代
+        # deque表示正在遍历的层
+        deque = [node]
+        nxt_deque = []
+        res = []
+        while deque:
+            while deque:
+                node = deque.pop(0)
+                res.append(node.val)
+                if node.left:
+                    nxt_deque.append(node.left)
+                if node.right:
+                    nxt_deque.append(node.right)
+            deque, nxt_deque = nxt_deque, []
+        return res
+
+        pass
+
+    def bfs(self):
+        # 具体怎么用迭代写BFS，是根据需求来的。
+        # dp 里面放这个吧(node, depth)
+        pass
+
     def mid_order(self, node):
         if node.left:
             self.mid_order(node.left)
@@ -69,6 +97,10 @@ class TreeNode:
             self.mid_order(node.right)
 
     def post_order(self, node=None):
+        pass
+
+    def in_order(self, node):
+        # bts的读法
         pass
 
 

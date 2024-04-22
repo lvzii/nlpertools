@@ -5,7 +5,7 @@ import math
 from collections import Counter, defaultdict
 from itertools import chain
 
-from .. import writetxt_w_list, LoadFromJson, readtxt_list_all_strip
+from .. import writetxt_w_list, load_from_json, readtxt_list_all_strip
 from ..utils.package import *
 
 
@@ -26,7 +26,7 @@ class TermFinder(object):
         bone_words = list(pd.read_excel(self.bone_words_path)["術語"])
         avg_bone_len = sum([len(i) for i in bone_words]) // len(bone_words)
 
-        tfidf = LoadFromJson(self.tfidf_path)
+        tfidf = load_from_json(self.tfidf_path)
 
         return bone_words, avg_bone_len, tfidf
 
