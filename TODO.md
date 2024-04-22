@@ -1,23 +1,29 @@
-修改成require的方式import，参考rasa
-想法是一个装饰器
+# TODO
 
-mongodb_uri:"mongodb://xxxx:xxxx@xxxx:12017/\
-  ?authSource=xxxx&readPreference=primary&ssl=false"
-
-neo4j_url: bolt://neo4j:xxxxx@xxxxxx:17690
-
-异步的fn_timer失效
-
-在用上neo4j的时候加上
-
-并行读json，指针
-
-添加弗洛伊德算法备忘
-
-
-
-加读json的，eval。warning
-
-添加pandas的分组操作
-
-项目分为开源组和闭源组，nlpertools属于开源组，Athene属于闭源。如何调用我的闭源组呢，闭源开发成平台。
+1. [x] 异步的fn_timer失效
+2. [ ] 在用上neo4j的时候加上
+3. [ ] 并行读json，指针
+4. [ ] 添加弗洛伊德算法备忘
+5. [ ] 加读json的，eval。warning
+6. [ ] 添加pandas的分组操作
+7. [ ] 有些其他项目（如果模型训练），如何和这个项目融合
+8. [ ] 树的创建采用分派函数@fun.register
+9. [ ] 如果读写list特别大，加入进度条，这个也是装饰器
+10. [ ] 算法给出业务使用例子 例如：确定有限状态自动机，可以做复杂的规则判断，时间+地点+任务，中国现役航母这类问题
+11. [x] 邮箱添加附件功能
+12. [ ] 提供一套配色方案
+13. [ ] 线段树放到template里
+14. [ ] 修改成require的方式import，参考rasa ,想法是一个装饰器 
+15. [ ] import问题还是没有解决
+16. [ ] 基于大模型向文档提问
+17. [x] 现有的import方式实在太耗时间
+18. [ ] 装饰器添加，知乎上有搜索好用的装饰器
+19. [ ] 如果不装pandas，那么类型检查中的pd没有DataFrame属性
+20. [ ] 删除文件夹，保留文件夹壳子
+21. [ ] fn_try在接口上失效
+22. [ ] load_from_json 返回哪行错了
+23. [ ] shuffle大文件 用指针
+24. [ ] athena里很多评估、build_train
+25. [ ] 语雀里的onehot?
+26. [ ] kfold支持.json
+27. [ ] np.where
