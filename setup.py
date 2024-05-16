@@ -12,22 +12,17 @@ def get_version():
         return version
 
 
-def get_requires():
-    with open("requirements.txt", "r", encoding="utf-8") as f:
-        file_content = f.read()
-        lines = [line.strip() for line in file_content.strip().split("\n") if not line.startswith("#")]
-        return lines
-
-
-extra_require = {
-    "torch": ["torch"],
-}
-
-
 def main():
     setup(
-        install_requires=get_requires(),
-        extras_require=extra_require,
+        # https://juejin.cn/post/7369349560421040128
+        install_requires=[
+            "numpy",
+            "pandas",
+            "psutil"
+        ],
+        extras_require={
+            "torch": ["torch"],
+        },
         version=get_version()
     )
 

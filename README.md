@@ -67,6 +67,8 @@ https://nlpertools.readthedocs.io/en/latest/
 
 - [readthedoc 检查文档构建状况](https://readthedocs.org/projects/nlpertools/builds)
 
+- [打包发布指南](https://juejin.cn/post/7369413136224878644)
+
 - 发布版本需要加tag
 
 ## 开发哲学

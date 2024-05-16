@@ -7,9 +7,6 @@
   </h4>
 </div>
 
-# Current version
-
-1.0.6dev
 
 # Introduction
 
@@ -55,6 +52,8 @@ https://nlpertools.readthedocs.io/en/latest/
           self.ltp = LTP(IPT_MODEL_PATH)
   ```
 - [git commit guide](https://blog.csdn.net/fd2025/article/details/124543690)
+
+- [upload to pypi](https://juejin.cn/post/7369413136224878644)
 
 - [readthedoc:check doc server status](https://readthedocs.org/projects/nlpertools/builds)
 
