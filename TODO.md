@@ -27,3 +27,4 @@
 25. [ ] 语雀里的onehot?
 26. [ ] kfold支持.json
 27. [ ] np.where
+28. [x] 没有自动装依赖

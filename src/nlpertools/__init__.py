@@ -18,7 +18,6 @@ from .monitor import *
 
 import os
 
+DB_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "default_db_config.yml")
 
-DB_CONFIG_FILE = os.path.join(os.path.dirname(__file__),"default_db_config.yml")
-
-__version__ = '1.0.5'
+__version__ = '1.0.7'
