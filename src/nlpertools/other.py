@@ -248,15 +248,6 @@ def stress_test(func, ipts):
     return results
 
 
-def get_substring_loc(text, subtext):
-    res = re.finditer(
-        subtext.replace('\\', '\\\\').replace('?', '\?').replace('(', '\(').replace(')', '\)').replace(']',
-                                                                                                       '\]').replace(
-            '[', '\[').replace('+', '\+'), text)
-    l, r = [i for i in res][0].regs[0]
-    return l, r
-
-
 def squeeze_list(high_dim_list):
     return list(itertools.chain.from_iterable(high_dim_list))
 
