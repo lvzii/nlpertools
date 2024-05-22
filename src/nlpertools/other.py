@@ -27,6 +27,19 @@ ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
+def jprint(obj, depth=0):
+    if isinstance(obj, dict):
+        sep = "-" * (10 - depth * 3)
+        for k, v in obj.items():
+            print(depth * "|", sep, k, sep)
+            jprint(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            jprint(v, depth + 1)
+    else:
+        print(obj)
+
+
 def seed_everything():
     import torch
     # seed everything
