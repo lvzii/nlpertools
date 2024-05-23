@@ -70,6 +70,16 @@ a = nlpertools.readtxt_list_all_strip('res.txt')
 # 或
 b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 ```
+```bash
+# get pypi 2af (need providing key)(need install pyotp)
+python -m nlpertools.get_2fa your_key
+
+# [not recommend] recommend nvitop
+## monitor gpu memory
+python -m nlpertools.monitor.gpu
+## monitor cpu memory
+python -m  nlpertools.monitor.memory
+```
 
 ## Contribution
 

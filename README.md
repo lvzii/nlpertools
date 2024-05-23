@@ -90,6 +90,12 @@ b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 ```
 
 ```bash
-# 监控gpu显存
-python -m nlpertools
+# 生成pypi双因素认证的实时密钥(需要提供key)
+python -m nlpertools.get_2fa xxxxxxxxx
+
+# 以下功能被nvitop替代，不推荐使用
+## 监控gpu显存
+python -m nlpertools 
+## 监控cpu
+python -m  nlpertools.monitor.memory
 ```
