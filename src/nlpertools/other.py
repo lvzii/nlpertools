@@ -40,6 +40,10 @@ def jprint(obj, depth=0):
         print(obj)
 
 
+def print_split(sign="=", num=20):
+    print(sign * num)
+
+
 def seed_everything():
     import torch
     # seed everything

@@ -51,6 +51,11 @@ https://nlpertools.readthedocs.io/en/latest/
       def __init__(self, IPT_MODEL_PATH):
           self.ltp = LTP(IPT_MODEL_PATH)
   ```
+    According to the assessment by `pyinstrument`, packages that exceed 1 second will adopt this method.
+  - 2s+ happybase、seaborn、torch、jieba
+  - 1s+ /
+  - 0.5s+ pandas elasticsearch transformers xgboost nltk mongo
+  
 - [git commit guide](https://blog.csdn.net/fd2025/article/details/124543690)
 
 - [upload to pypi](https://juejin.cn/post/7369413136224878644)
@@ -67,7 +72,7 @@ Write a function once, never write it twice!
 import nlpertools
 
 a = nlpertools.readtxt_list_all_strip('res.txt')
-# 或
+# or
 b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 ```
 ```bash

@@ -57,9 +57,9 @@ https://nlpertools.readthedocs.io/en/latest/
       def __init__(self, IPT_MODEL_PATH):
           self.ltp = LTP(IPT_MODEL_PATH)
   ```
-  通过pyinstrument判断，超过1s的包即采用这种方式
+  通过`pyinstrument`判断，超过1s的包即采用这种方式
   - 2s+ happybase、seaborn、torch、jieba
-  - 1s+
+  - 1s+ /
   - 0.5s+ pandas elasticsearch transformers xgboost nltk mongo
 
 
@@ -91,11 +91,18 @@ b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 
 ```bash
 # 生成pypi双因素认证的实时密钥(需要提供key)
-python -m nlpertools.get_2fa xxxxxxxxx
+python -m nlpertools.get_2fa your_key
 
 # 以下功能被nvitop替代，不推荐使用
 ## 监控gpu显存
-python -m nlpertools 
+python -m nlpertools.monitor.gpu
 ## 监控cpu
 python -m  nlpertools.monitor.memory
 ```
+
+## 一些常用项目
+
+nvitop
+
+ydata-profiling
+
