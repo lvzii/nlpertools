@@ -10,6 +10,29 @@ def j_mkdir(name):
     os.makedirs(name, exist_ok=True)
 
 
+def j_walk(name, suffix=None):
+    paths = []
+    for root, dirs, files in os.walk(name):
+        for file in files:
+            path = os.path.join(root, file)
+            if not (suffix and not path.endswith(suffix)):
+                paths.append(path)
+    return paths
+
+
+def windows_to_wsl_path(windows_path):
+    # 转换驱动器号
+    if windows_path[1:3] == ':\\':
+        drive_letter = windows_path[0].lower()
+        path = windows_path[2:].replace('\\', '/')
+        wsl_path = f'/mnt/{drive_letter}{path}'
+    else:
+        # 如果路径不是以驱动器号开头，则直接替换路径分隔符
+        wsl_path = windows_path.replace('\\', '/').replace("'", "\'")
+
+    return wsl_path
+
+
 def get_filename(path) -> str:
     """
     返回路径最后的文件名
