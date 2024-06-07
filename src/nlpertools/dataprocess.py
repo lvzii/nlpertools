@@ -55,9 +55,9 @@ class Pattern:
     # 中文人名
     chinese_name_pattern = "(?:[\u4e00-\u9fa5·]{2,3})"
     # 英文人名
-    english_name_pattern = "(^[a-zA-Z][a-zA-Z\s]{0,20}[a-zA-Z]$)"
+    english_name_pattern = r"(^[a-zA-Z][a-zA-Z\s]{0,20}[a-zA-Z]$)"
     # 纯数字
-    pure_num_pattern = "\d+"
+    pure_num_pattern = r"\d+"
     # xxxx图/表 之类的表述
     pic_table_descript_pattern = ".{1,15}图"
 
@@ -66,20 +66,20 @@ class Pattern:
     hlink_pattern = (
         r"(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"
     )
-    http_pattern = "(http|https):\/\/([\w.]+\/?)\S*/\S*"
+    http_pattern = r"(http|https):\/\/([\w.]+\/?)\S*/\S*"
     # 邮箱
-    email_pattern = "[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+"
+    email_pattern = r"[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+"
     # html 可能过于严格了
-    html_pattern = "<[\s\S]*?>"
+    html_pattern = r"<[\s\S]*?>"
     # 重复 “asdasdasdasd”
     repeat_pattern = "(.)\1+"
     # 日期
-    day_time_pattern = "\d{1,4}(-)(1[0-2]|0?[1-9])\1(0?[1-9]|[1-2]\d|30|31)"
+    day_time_pattern = r"\d{1,4}(-)(1[0-2]|0?[1-9])\1(0?[1-9]|[1-2]\d|30|31)"
     # 小时
-    hour_time_pattern = "(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d"
+    hour_time_pattern = r"(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d"
     # 股票
     stock_pattern = (
-        "(s[hz]|S[HZ])(000[\d]{3}|002[\d]{3}|300[\d]{3}|600[\d]{3}|60[\d]{4})"
+        r"(s[hz]|S[HZ])(000[\d]{3}|002[\d]{3}|300[\d]{3}|600[\d]{3}|60[\d]{4})"
     )
 
     # 一般是需要替换的
@@ -91,7 +91,7 @@ class Pattern:
     # 微博视频等
     weibo_pattern = r"([\s]\w+(的微博视频)|#|【|】|转发微博)"
     # @
-    at_pattern = "@\w+"
+    at_pattern = r"@\w+"
 
     # from https://github.com/bigscience-workshop/data-preparation pii
     year_patterns = [
@@ -116,7 +116,7 @@ class Pattern:
     ipv4_pattern = r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}'
     ipv6_pattern = r'(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
     ip_pattern = r"(?:^|[\b\s@?,!;:\'\")(.\p{Han}])(" + r"|".join(
-        [ipv4_pattern, ipv6_pattern]) + ")(?:$|[\s@,?!;:\'\"(.\p{Han}])"
+        [ipv4_pattern, ipv6_pattern]) + r")(?:$|[\s@,?!;:\'\"(.\p{Han}])"
 
     # https://regex101.com/r/EpA5B7/1
     email_line_pattern = r'''
@@ -466,7 +466,7 @@ class TextProcess(object):
         p = re.compile(pattern, re.S)
         text = p.sub("", text)
 
-        dr = re.compile("@\w+", re.S)
+        dr = re.compile(r"@\w+", re.S)
         text = dr.sub("", text)
 
         return text
@@ -527,7 +527,7 @@ class TextProcess(object):
             text = re.sub(pattern, replace, text)
         return text
 
-    def calc_proportion_zh(self,text):
+    def calc_proportion_zh(self, text):
         text = text.strip()
         # 如果是中国英文的情况，并且英文有空格分开
         if " " in text:
@@ -538,6 +538,8 @@ class TextProcess(object):
                 chinese_count += 1
             else:
                 pass
+
+
 class CopyFunc():
     # from https://github.com/lemon234071/clean-dialog
     def is_chinese_char(cp):
@@ -596,6 +598,20 @@ def convert_basic2fullwidth(sentence):
             char = chr(ord(char) + 65248)
         new_sentence += char
     return new_sentence
+
+
+def clean_illegal_chars_for_excel(df):
+    # openpyxl 库写入 Excel 文件时，有一些非法字符，需要删除
+    # 定义一个函数来移除字符串中的非法字符
+    def remove_illegal_chars(s):
+        if isinstance(s, str):
+            # 移除 ASCII 码在非法范围内的字符
+            return re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F]', '', s)
+        return s
+
+    # 应用清理函数到数据框的每个元素
+    return df.map(remove_illegal_chars)
+
 
 if __name__ == "__main__":
     pattern_for_filter = [
