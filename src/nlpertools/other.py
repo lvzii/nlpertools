@@ -158,19 +158,7 @@ def convert_np_to_py(obj):
         return obj
 
 
-def git_push():
-    """
-    针对国内提交github经常失败，自动提交
-    """
-    num = -1
-    while 1:
-        num += 1
-        print("retry num: {}".format(num))
-        info = os.system("git push --set-upstream origin main")
-        print(str(info))
-        if not str(info).startswith("fatal"):
-            print("scucess")
-            break
+
 
 
 def snake_to_camel(s: str) -> str:
