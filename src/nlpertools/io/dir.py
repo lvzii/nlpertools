@@ -33,7 +33,7 @@ def windows_to_wsl_path(windows_path):
     return wsl_path
 
 
-def get_filename(path) -> str:
+def get_filename(path, suffix=True) -> str:
     """
     返回路径最后的文件名
     :param path:
@@ -41,11 +41,20 @@ def get_filename(path) -> str:
     """
     # path = r'***/**/***.txt'
     filename = os.path.split(path)[-1]
+    if not suffix:
+        filename = filename.split('.')[0]
     return filename
 
 
 def j_listdir(dir_name, including_dir=True):
-    #  yield
+    filenames = os.listdir(dir_name)
+    if including_dir:
+        return [os.path.join(dir_name, filename) for filename in filenames]
+    else:
+        return list(filenames)
+
+
+def j_listdir_yield(dir_name, including_dir=True):
     filenames = os.listdir(dir_name)
     for filename in filenames:
         if including_dir:
