@@ -47,7 +47,14 @@ def print_three_line_table(df):
     # // thead 表头
     # // tr 行
     # // td 单元格
-    style = """<style>
+    head= """<!DOCTYPE html>
+    <html lang="zh">
+    <head>
+        <meta charset="UTF-8">
+        <title>页面标题</title>
+    </head>"""
+    style = """
+    <style>
 
         table {
             border-collapse: collapse;
