@@ -27,6 +27,8 @@ ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
+
+
 def print_three_line_table(df):
     # TODO 这里需要添加可以支持excel里变红的功能
     import webbrowser
@@ -47,7 +49,7 @@ def print_three_line_table(df):
     # // thead 表头
     # // tr 行
     # // td 单元格
-    head= """<!DOCTYPE html>
+    head = """<!DOCTYPE html>
     <html lang="zh">
     <head>
         <meta charset="UTF-8">
@@ -163,9 +165,6 @@ def convert_np_to_py(obj):
         return float(obj)
     else:
         return obj
-
-
-
 
 
 def snake_to_camel(s: str) -> str:
