@@ -50,10 +50,10 @@ def main():
 
     if args.gitpush:
         git_push()
-    elif args.mac_address:
-        get_mac_address()
     elif args.gitpull:
         git_pull()
+    elif args.mac_address:
+        get_mac_address()
     else:
 
         print("No operation specified. Use --gitpush or --get_mac_address.")

@@ -14,6 +14,12 @@ from ..utils.package import *
 LARGE_FILE_THRESHOLD = 1e5
 
 
+def safe_filename(filename):
+    for char in ['\\', '/', ':', '*', '?', '"', '<', '>', '|']:
+        filename = filename.replace(char, '_')
+    return filename
+
+
 def read_yaml(path, omega=False):
     if omega:
         return omegaconf.OmegaConf.load(path)
@@ -259,6 +265,7 @@ def save_to_mongo():
 
     """
     pass
+
 
 def load_from_mongo():
     pass
