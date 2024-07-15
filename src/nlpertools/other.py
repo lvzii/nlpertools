@@ -5,6 +5,8 @@ import itertools
 import os
 import re
 import string
+import subprocess
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 import math
@@ -27,6 +29,30 @@ ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
+def run_cmd_with_timeout(command, timeout):
+    process = subprocess.Popen(command, shell=True, encoding="utf-8", errors="ignore", stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
+
+    def target():
+        try:
+            res = process.communicate()
+            print(res)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.communicate()
+
+    thread = threading.Thread(target=target)
+    thread.start()
+    thread.join(timeout)
+    if thread.is_alive():
+        print("Terminating process")
+        process.terminate()
+        thread.join()
+        return False, "运行时间过长"
+    if process.returncode == 0:
+        return True, "success"
+    else:
+        return False, "错误"
 
 
 def print_three_line_table(df):

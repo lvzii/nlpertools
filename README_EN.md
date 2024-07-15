@@ -84,6 +84,10 @@ python -m nlpertools.get_2fa your_key
 python -m nlpertools.monitor.gpu
 ## monitor cpu memory
 python -m  nlpertools.monitor.memory
+
+## git
+python nlpertools.cli --git_push
+python nlpertools.cli --git_pull
 ```
 
 ## Contribution
