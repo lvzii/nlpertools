@@ -1,3 +1,4 @@
+#encoding=utf-8
 # !/usr/bin/python3.8
 # -*- coding: utf-8 -*-
 # @Author  : youshu.Ji
@@ -5,9 +6,11 @@ import datetime
 import json
 import logging
 
-from . import DB_CONFIG_FILE
 from .io.file import read_yaml
 from .utils.package import *
+import os
+
+DB_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "default_db_config.yml")
 
 # import aioredis
 # import happybase
@@ -28,21 +31,24 @@ class Neo4jOps(object):
     NEO4J_TIMEOUT = 0.3
     pass
 
-class SqliteOps(object):
-    import sqlite3
-    database_path = r'xx.db'
-    conn = sqlite3.connect(database_path)
-    c = conn.cursor()
-    sql = "select name from sqlite_master where type='table' order by name"
-    c.execute(sql)
-    print(c.fetchall())
-    sql = "select * from typecho_contents"
-    c.execute(sql)
-    res = c.fetchall()
-    print(res[3])
 
-    conn.commit()
-    conn.close()
+class SqliteOps(object):
+    pass
+    # import sqlite3
+    # database_path = r'xx.db'
+    # conn = sqlite3.connect(database_path)
+    # c = conn.cursor()
+    # sql = "select name from sqlite_master where type='table' order by name"
+    # c.execute(sql)
+    # print(c.fetchall())
+    # sql = "select * from typecho_contents"
+    # c.execute(sql)
+    # res = c.fetchall()
+    # print(res[3])
+    #
+    # conn.commit()
+    # conn.close()
+
 
 class MysqlOps(object):
     import pandas as pd
@@ -346,8 +352,6 @@ class KafkaOps(object):
         for msg in consumer:
             recv = "%s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition, msg.offset, msg.key, msg.value)
             print(recv)
-
-
 
 
 class MilvusOps(object):

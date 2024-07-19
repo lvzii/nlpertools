@@ -29,14 +29,17 @@ ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
-def run_cmd_with_timeout(command, timeout):
-    process = subprocess.Popen(command, shell=True, encoding="utf-8", errors="ignore", stdout=subprocess.PIPE,
+def run_cmd_with_timeout(cmd, timeout):
+    """
+    https://juejin.cn/post/7391703459803086848
+    """
+    process = subprocess.Popen(cmd, shell=True, encoding="utf-8", errors="ignore", stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
-
+    res = [None]
     def target():
         try:
-            res = process.communicate()
-            print(res)
+            ans = process.communicate()
+            res[0] = ans
         except subprocess.TimeoutExpired:
             process.kill()
             process.communicate()
@@ -45,14 +48,15 @@ def run_cmd_with_timeout(command, timeout):
     thread.start()
     thread.join(timeout)
     if thread.is_alive():
-        print("Terminating process")
+        print(f"Terminating {cmd}")
         process.terminate()
         thread.join()
-        return False, "运行时间过长"
+        return False, f"{cmd} is running over {timeout}s"
     if process.returncode == 0:
-        return True, "success"
+        # res[0][0] 是output
+        return True, res[0][0]
     else:
-        return False, "错误"
+        return False, res[0][0]
 
 
 def print_three_line_table(df):

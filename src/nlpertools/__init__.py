@@ -3,6 +3,7 @@
 # @Author  : youshu.Ji
 from .algo.kmp import *
 from .data_structure.base_structure import *
+from .draw import *
 from .dataprocess import *
 from .io.dir import *
 from .io.file import *
@@ -17,8 +18,6 @@ from .wrapper import *
 from .monitor import *
 from .cli import *
 
-import os
 
-DB_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "default_db_config.yml")
 
-__version__ = '1.0.7'
+__version__ = '1.0.8'

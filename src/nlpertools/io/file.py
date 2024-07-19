@@ -23,7 +23,7 @@ def safe_filename(filename):
 def read_yaml(path, omega=False):
     if omega:
         return omegaconf.OmegaConf.load(path)
-    return yaml.load(codecs.open(path), Loader=yaml.FullLoader)
+    return yaml.load(codecs.open(path, encoding='utf-8'), Loader=yaml.FullLoader)
 
 
 def _merge_file(filelist, save_filename, shuffle=False):
