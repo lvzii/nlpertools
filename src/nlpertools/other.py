@@ -11,6 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 import math
 import datetime
+import difflib
 import psutil
 from .io.file import writetxt_w_list, writetxt_a
 # import numpy as np
@@ -29,6 +30,19 @@ ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
+def get_diff_parts(str1, str2):
+    # 创建一个 SequenceMatcher 对象
+    matcher = difflib.SequenceMatcher(None, str1, str2)
+
+    # 获取差异部分
+    diff_parts = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == 'replace' or tag == 'delete' or tag == 'insert':
+            diff_parts.append((tag, str1[i1:i2], str2[j1:j2]))
+
+    return diff_parts
+
+
 def run_cmd_with_timeout(cmd, timeout):
     """
     https://juejin.cn/post/7391703459803086848
@@ -36,6 +50,7 @@ def run_cmd_with_timeout(cmd, timeout):
     process = subprocess.Popen(cmd, shell=True, encoding="utf-8", errors="ignore", stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
     res = [None]
+
     def target():
         try:
             ans = process.communicate()
@@ -51,6 +66,7 @@ def run_cmd_with_timeout(cmd, timeout):
         print(f"Terminating {cmd}")
         process.terminate()
         thread.join()
+        print("Terminated successfully")
         return False, f"{cmd} is running over {timeout}s"
     if process.returncode == 0:
         # res[0][0] 是output
