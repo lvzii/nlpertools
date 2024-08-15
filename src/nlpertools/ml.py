@@ -18,9 +18,8 @@ from .utils.package import *
 
 
 def calc_llm_train_activation_memory(
-    model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num, gpu_num=1
+        model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num, gpu_num=1
 ):
-
     """
     return bytes
 
@@ -33,18 +32,18 @@ def calc_llm_train_activation_memory(
     # FFN
     # Layer Norm
     r1 = (
-        sequence_length
-        * batch_size
-        * hidden_dim
-        * lay_number
-        * (34 + 5 * attention_heads_num * sequence_length / hidden_dim)
+            sequence_length
+            * batch_size
+            * hidden_dim
+            * lay_number
+            * (34 + 5 * attention_heads_num * sequence_length / hidden_dim)
     )
     # reference2
     r2 = (
-        lay_number*(2 * sequence_length * attention_heads_num + 16 * hidden_dim)
-        * sequence_length
-        * batch_size
-        / gpu_num
+            lay_number * (2 * sequence_length * attention_heads_num + 16 * hidden_dim)
+            * sequence_length
+            * batch_size
+            / gpu_num
     )
     print(r1)
     print(r2)
@@ -80,7 +79,7 @@ class DataStructure:
     }
     ner_input_example = "这句话一共有两个实体分别为大象和老鼠。"
     ner_label_example = (
-        list("OOOOOOOOOOOOO") + ["B-s", "I-s"] + ["O"] + ["B-o", "I-o"] + ["O"]
+            list("OOOOOOOOOOOOO") + ["B-s", "I-s"] + ["O"] + ["B-o", "I-o"] + ["O"]
     )
 
 
@@ -135,7 +134,7 @@ class STEM(object):
             if each_srl:
                 args = []
                 for arg in each_srl:
-                    args.extend(seg[arg[1] : arg[2] + 1])
+                    args.extend(seg[arg[1]: arg[2] + 1])
                 # 添加上谓词
                 args.insert(each_srl[0][2] - each_srl[0][1] + 1, seg[wdx])
                 events.append(args)
@@ -174,7 +173,7 @@ def subject_object_labeling(spo_list, text):
         q_list_length = len(q_list)
         k_list_length = len(k_list)
         for idx in range(k_list_length - q_list_length + 1):
-            t = [q == k for q, k in zip(q_list, k_list[idx : idx + q_list_length])]
+            t = [q == k for q, k in zip(q_list, k_list[idx: idx + q_list_length])]
             # print(idx, t)
             if all(t):
                 # print(idx)
@@ -187,8 +186,8 @@ def subject_object_labeling(spo_list, text):
         if len(spo) == 2:
             labeling_list[idx_start + 1] = "I-" + spo_type
         elif len(spo) >= 3:
-            labeling_list[idx_start + 1 : idx_start + len(spo)] = ["I-" + spo_type] * (
-                len(spo) - 1
+            labeling_list[idx_start + 1: idx_start + len(spo)] = ["I-" + spo_type] * (
+                    len(spo) - 1
             )
         else:
             pass
@@ -239,12 +238,12 @@ def convert_crf_format_10_fold(corpus, objdir_path):
     split_position = int(len(corpus) / 10)
     for k in range(0, 10):
         if k == 9:
-            dev_set = corpus[k * split_position :]
+            dev_set = corpus[k * split_position:]
             train_set = corpus[: k * split_position]
         else:
-            dev_set = corpus[k * split_position : (k + 1) * split_position]
+            dev_set = corpus[k * split_position: (k + 1) * split_position]
             train_set = (
-                corpus[: k * split_position] + corpus[(k + 1) * split_position :]
+                    corpus[: k * split_position] + corpus[(k + 1) * split_position:]
             )
         writetxt_w_list(
             train_set, os.path.join(objdir_path, "train{}.txt".format(k + 1))
@@ -292,10 +291,39 @@ def kfold_txt(corpus, path, k=9, is_shuffle=True):
     if is_shuffle:
         random.shuffle(corpus)
     split_position = int(len(corpus) / 10)
-    train_set, dev_set = corpus[: k * split_position], corpus[k * split_position :]
+    train_set, dev_set = corpus[: k * split_position], corpus[k * split_position:]
     writetxt_w_list(train_set, os.path.join(path, "train.tsv"), num_lf=1)
     writetxt_w_list(dev_set, os.path.join(path, "test.tsv"), num_lf=1)
     writetxt_w_list(dev_set, os.path.join(path, "dev.tsv"), num_lf=1)
+
+
+def sample():
+    import pandas as pd
+    from sklearn.model_selection import StratifiedShuffleSplit
+
+    # 假设 df 是你的 DataFrame
+
+    df = pd.DataFrame({
+        "count_line": [i for i in range(100)],
+        "x": [i for i in range(100)],
+        "y": [i // 10 for i in range(100)],
+    })
+    print(df)
+    # count_line 是用于分层抽样的字段
+
+    # 创建 StratifiedShuffleSplit 对象，设置测试集比例为 0.1
+    split = StratifiedShuffleSplit(n_splits=1, test_size=0.1, random_state=42)
+
+    # 获取训练集和测试集的索引
+    train_index, test_index = next(split.split(df, df['y']))
+
+    # 根据索引划分训练集和测试集
+    train_df = df.loc[train_index]
+    test_df = df.loc[test_index]
+
+    # 打印训练集和测试集的行数
+    print("训练集行数：", len(train_df))
+    print("测试集行数：", len(test_df))
 
 
 def kfold_df(df, save_dir=None):
@@ -389,7 +417,7 @@ def split_sentence(sentence, language="chinese", cross_line=True):
     for idx, char in enumerate(sentence):
         if idx == len(sentence) - 1:
             if char in split_signs:
-                sentences.append(sentence[start_idx : idx + 1].strip())
+                sentences.append(sentence[start_idx: idx + 1].strip())
                 start_idx = idx + 1
             else:
                 sentences.append(sentence[start_idx:].strip())
@@ -399,10 +427,10 @@ def split_sentence(sentence, language="chinese", cross_line=True):
                     if idx < len(sentence) - 2:
                         # 处理。”。
                         if sentence[idx + 2] not in split_signs:
-                            sentences.append(sentence[start_idx : idx + 2].strip())
+                            sentences.append(sentence[start_idx: idx + 2].strip())
                             start_idx = idx + 2
                 elif sentence[idx + 1] not in split_signs:
-                    sentences.append(sentence[start_idx : idx + 1].strip())
+                    sentences.append(sentence[start_idx: idx + 1].strip())
                     start_idx = idx + 1
     return sentences
 
