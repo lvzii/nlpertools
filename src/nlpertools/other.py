@@ -356,10 +356,14 @@ def squeeze_list(high_dim_list):
 
 
 def unsqueeze_list(flatten_list, each_element_len):
+    # 该函数是错的，被split_list替代了
     two_dim_list = [flatten_list[i * each_element_len:(i + 1) * each_element_len] for i in
                     range(len(flatten_list) // each_element_len)]
     return two_dim_list
 
+def split_list(input_list, chunk_size):
+    # 使用列表推导式将列表分割成二维数组
+    return [input_list[i:i + chunk_size] for i in range(0, len(input_list), chunk_size)]
 
 def auto_close():
     """
