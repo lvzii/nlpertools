@@ -75,19 +75,21 @@ a = nlpertools.readtxt_list_all_strip('res.txt')
 # or
 b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 ```
+
 ```bash
-# get pypi 2af (need providing key)(need install pyotp)
+# cli
+## get pypi 2af (need providing key)(need install pyotp)
 python -m nlpertools.get_2fa your_key
+
+## git
+python nlpertools.cli --git_push
+python nlpertools.cli --git_pull
 
 # [not recommend] recommend nvitop
 ## monitor gpu memory
 python -m nlpertools.monitor.gpu
 ## monitor cpu memory
 python -m  nlpertools.monitor.memory
-
-## git
-python nlpertools.cli --git_push
-python nlpertools.cli --git_pull
 ```
 
 ## Contribution

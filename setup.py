@@ -23,7 +23,12 @@ def main():
         extras_require={
             "torch": ["torch"],
         },
-        version=get_version()
+        version=get_version(),
+        entry_points={
+            "console_scripts": [
+                "ncli=nlpertools.cli:main",
+            ]
+        }
     )
 
 
