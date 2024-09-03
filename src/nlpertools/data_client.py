@@ -122,6 +122,41 @@ class EsOps(object):
         print(f"批量保存数据： {_res}")
 
 
+class MongoDB_BETA:
+    def __init__(self, host='localhost', port=27017, db_name=None, collection_name=None):
+        self.host = host
+        self.port = port
+        self.db_name = db_name
+        self.collection_name = collection_name
+        self.client = None
+        self.db = None
+        self.collection = None
+
+    def connect(self):
+        self.client = MongoClient(self.host, self.port)
+        self.db = self.client[self.db_name]
+        self.collection = self.db[self.collection_name]
+
+    def close(self):
+        if self.client:
+            self.client.close()
+
+    def insert_data(self, data):
+        if isinstance(data, list):
+            self.collection.insert_many(data)
+        else:
+            self.collection.insert_one(data)
+
+    def check_data_exists(self, query):
+        """
+        检查某个数据是否存在于数据库中
+        :param query: 查询条件
+        :return: 布尔值，表示数据是否存在
+        """
+        return self.collection.count_documents(query) > 0
+
+
+
 class MongoOps(object):
     from pymongo import MongoClient
     def __init__(self, config=global_db_config["mongo"]):
