@@ -14,7 +14,7 @@ from ..utils.package import *
 LARGE_FILE_THRESHOLD = 1e5
 
 
-def safe_filename(filename):
+def safe_filename(filename: str) -> str:
     for char in ['\\', '/', ':', '*', '?', '"', '<', '>', '|']:
         filename = filename.replace(char, '_')
     return filename
@@ -57,7 +57,7 @@ load_from_json
 
 
 # 读txt文件 一次全读完 返回list 去换行
-def readtxt_list_all_strip(path, encoding='utf-8'):
+def readtxt_list_all_strip(path, encoding='utf-8') -> list:
     file_line_num = iter_count(path)
     lines = []
     with codecs.open(path, 'r', encoding) as r:
@@ -72,7 +72,7 @@ def readtxt_list_all_strip(path, encoding='utf-8'):
 
 
 # 读txt 一次读一行 最后返回list
-def readtxt_list_each(path):
+def readtxt_list_each(path) -> list:
     lines = []
     with codecs.open(path, 'r', 'utf-8') as r:
         line = r.readline()
@@ -82,7 +82,7 @@ def readtxt_list_each(path):
     return lines
 
 
-def readtxt_list_each_strip(path):
+def readtxt_list_each_strip(path) -> list:
     """
     yield方法
     """
@@ -94,14 +94,14 @@ def readtxt_list_each_strip(path):
 
 
 # 读txt文件 一次全读完 返回list
-def readtxt_list_all(path):
+def readtxt_list_all(path) -> list:
     with codecs.open(path, 'r', 'utf-8') as r:
         lines = r.readlines()
         return lines
 
 
 # 读byte文件 读成一条string
-def readtxt_byte(path, encoding="utf-8"):
+def readtxt_byte(path, encoding="utf-8") -> str:
     with codecs.open(path, 'rb') as r:
         lines = r.read()
         lines = lines.decode(encoding)
@@ -109,7 +109,7 @@ def readtxt_byte(path, encoding="utf-8"):
 
 
 # 读txt文件 读成一条string
-def readtxt_string(path, encoding="utf-8"):
+def readtxt_string(path, encoding="utf-8") -> str:
     with codecs.open(path, 'r', encoding) as r:
         lines = r.read()
         return lines.replace('\r', '')
