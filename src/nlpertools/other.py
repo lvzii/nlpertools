@@ -30,6 +30,21 @@ ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
 OTHER_PUNCTUATION = list('!@#$%^&*')
 
 
+def setup_logging(log_file):
+    """
+    Set up logging configuration.
+
+    Args:
+        log_file (str): Path to the log file.
+    """
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
+
 def get_diff_parts(str1, str2):
     # 创建一个 SequenceMatcher 对象
     matcher = difflib.SequenceMatcher(None, str1, str2)
@@ -361,9 +376,11 @@ def unsqueeze_list(flatten_list, each_element_len):
                     range(len(flatten_list) // each_element_len)]
     return two_dim_list
 
+
 def split_list(input_list, chunk_size):
     # 使用列表推导式将列表分割成二维数组
     return [input_list[i:i + chunk_size] for i in range(0, len(input_list), chunk_size)]
+
 
 def auto_close():
     """
