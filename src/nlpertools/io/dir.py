@@ -46,7 +46,7 @@ def get_filename(path, suffix=True) -> str:
     return filename
 
 
-def j_listdir(dir_name, including_dir=True):
+def listdir(dir_name, including_dir=True):
     filenames = os.listdir(dir_name)
     if including_dir:
         return [os.path.join(dir_name, filename) for filename in filenames]
@@ -54,7 +54,7 @@ def j_listdir(dir_name, including_dir=True):
         return list(filenames)
 
 
-def j_listdir_yield(dir_name, including_dir=True):
+def listdir_yield(dir_name, including_dir=True):
     filenames = os.listdir(dir_name)
     for filename in filenames:
         if including_dir:

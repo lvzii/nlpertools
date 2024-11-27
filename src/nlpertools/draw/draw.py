@@ -20,7 +20,7 @@ def confused_matrix(confuse_matrix):
     f.savefig('tmp.jpg', bbox_inches='tight')
 
 
-def plot_histogram(data, bin_size):
+def plot_histogram(data, bin_size, max_bin):
     """
     画直方图，超过1000的统一按1000算
     :param data:
@@ -33,15 +33,15 @@ def plot_histogram(data, bin_size):
     from matplotlib.ticker import MaxNLocator
     # 将超过1000的值改为1000
     def process_lengths(data):
-        return [length if length <= 1000 else 1003 for length in data]
+        return [length if length <= max_bin else max_bin + 3 for length in data]
 
     # 前闭后开
-    min_num, max_num = 0, 1000
+    # min_num, max_num = 0, 1000
     # min_num, max_num = min(data), max(data)
 
     plt.figure(figsize=(12, 8))
     processed_data = process_lengths(data)
-    bins = np.arange(0, 1000 + 2 * bin_size, bin_size)
+    bins = np.arange(0, max_bin + 2 * bin_size, bin_size)
     # 绘制直方图
     n, new_bins, patches = plt.hist(processed_data, bins=bins, edgecolor='black', color='skyblue', alpha=0.7,
                                     linewidth=0)
@@ -60,10 +60,8 @@ def plot_histogram(data, bin_size):
     plt.xlabel('module line number', fontsize=14)
     plt.ylabel('frequency', fontsize=14)
 
-    # 添加网格
     plt.grid(True, linestyle='--', alpha=0.6)
 
-    # 美化x轴和y轴的刻度
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
@@ -80,4 +78,4 @@ if __name__ == '__main__':
     # 调整区间大小
     bin_size = 50
     # 示例模块长度数据
-    plot_histogram([1, 100, 999, 1000, 1002, 1100, 1150], bin_size)
+    plot_histogram([1, 100, 999, 1000, 1002, 1100, 1150], bin_size, max_bin=1000)

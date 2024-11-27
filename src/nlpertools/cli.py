@@ -3,7 +3,6 @@ import os
 import uuid
 import sys
 
-import pyotp
 
 """
 如何Debug cli.py
@@ -49,6 +48,7 @@ def get_mac_address():
 
 
 def get_2af_value(key):
+    import pyotp
     """
     key应该是7位的
     """

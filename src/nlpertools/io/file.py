@@ -241,12 +241,12 @@ def load_from_jsonl(path):
         return corpus
 
 
-def pickle_save(data, path):
+def save_pkl(data, path):
     with open(path, 'wb') as f:
         pickle.dump(data, f)
 
 
-def pickle_load(path):
+def load_pkl(path):
     with open(path, 'rb') as f:
         data = pickle.load(f)
     return data
