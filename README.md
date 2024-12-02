@@ -15,7 +15,7 @@
 
 它解决了什么问题：
 
-- 很多函数是记不住的， ~~每次写每次都要搜~~ 每次都要问大模型 ，例如pandas排序
+- 很多函数是记不住的， 每次写都要~~搜~~问大模型 ，例如pandas排序
 - 刷题的时候，树结构的题目很难调试
 
 
@@ -91,11 +91,11 @@ b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 
 ```bash
 # 生成pypi双因素认证的实时密钥(需要提供key)
-python -m nlpertools.get_2fa your_key
+python -m nlpertools.cli --get_2fa --get_2fa_key your_key
 
 ## git
-python nlpertools.cli --git_push
-python nlpertools.cli --git_pull
+python -m nlpertools.cli --git_push
+python -m nlpertools.cli --git_pull
 
 # 以下功能被nvitop替代，不推荐使用
 ## 监控gpu显存
