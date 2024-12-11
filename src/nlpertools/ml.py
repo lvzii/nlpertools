@@ -17,6 +17,28 @@ from .io.file import readtxt_list_all_strip, writetxt_w_list, save_to_csv
 from .utils.package import *
 
 
+def estimate_pass_at_k(num_samples:list, num_correct:list, k):
+    """
+    copy from https://huggingface.co/spaces/evaluate-metric/code_eval/blob/main/code_eval.py
+    num_samples: list
+    """
+    """Estimates pass@k of each problem and returns them in an array."""
+
+    def estimator(n: int, c: int, k: int) -> float:
+        """Calculates 1 - comb(n - c, k) / comb(n, k)."""
+        if n - c < k:
+            return 1.0
+        return 1.0 - np.prod(1.0 - k / np.arange(n - c + 1, n + 1))
+
+    if isinstance(num_samples, int):
+        num_samples_it = itertools.repeat(num_samples, len(num_correct))
+    else:
+        assert len(num_samples) == len(num_correct)
+        num_samples_it = iter(num_samples)
+
+    return np.array([estimator(int(n), int(c), k) for n, c in zip(num_samples_it, num_correct)])
+
+
 def calc_llm_train_activation_memory(
         model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num, gpu_num=1
 ):
