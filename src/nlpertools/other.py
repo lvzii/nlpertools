@@ -169,8 +169,11 @@ def jprint(obj, depth=0):
         print(obj)
 
 
-def print_split(sign="=", num=20):
-    print(sign * num)
+def print_split(sign="=", num=20, char: str = None):
+    if char:
+        print(sign * num // 2, char, sign * num // 2)
+    else:
+        print(sign * num)
 
 
 def seed_everything():

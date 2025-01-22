@@ -17,7 +17,7 @@ from .io.file import readtxt_list_all_strip, writetxt_w_list, save_to_csv
 from .utils.package import *
 
 
-def estimate_pass_at_k(num_samples:list, num_correct:list, k):
+def estimate_pass_at_k(num_samples: list, num_correct: list, k):
     """
     copy from https://huggingface.co/spaces/evaluate-metric/code_eval/blob/main/code_eval.py
     num_samples: list
@@ -305,20 +305,6 @@ def read_seq_res(path, labels):
     return text, raw_label, predict_label
 
 
-def kfold_txt(corpus, path, k=9, is_shuffle=True):
-    """
-    k是10份中训练集占了几份
-    """
-    j_mkdir(path)
-    if is_shuffle:
-        random.shuffle(corpus)
-    split_position = int(len(corpus) / 10)
-    train_set, dev_set = corpus[: k * split_position], corpus[k * split_position:]
-    writetxt_w_list(train_set, os.path.join(path, "train.tsv"), num_lf=1)
-    writetxt_w_list(dev_set, os.path.join(path, "test.tsv"), num_lf=1)
-    writetxt_w_list(dev_set, os.path.join(path, "dev.tsv"), num_lf=1)
-
-
 def sample():
     import pandas as pd
     from sklearn.model_selection import StratifiedShuffleSplit
@@ -346,6 +332,28 @@ def sample():
     # 打印训练集和测试集的行数
     print("训练集行数：", len(train_df))
     print("测试集行数：", len(test_df))
+
+
+def kfold_txt(corpus, path, k=9, is_shuffle=True):
+    """
+    k是10份中训练集占了几份
+    """
+    j_mkdir(path)
+    if is_shuffle:
+        random.shuffle(corpus)
+    split_position = int(len(corpus) / 10)
+    train_set, dev_set = corpus[: k * split_position], corpus[k * split_position:]
+    writetxt_w_list(train_set, os.path.join(path, "train.tsv"), num_lf=1)
+    writetxt_w_list(dev_set, os.path.join(path, "test.tsv"), num_lf=1)
+    writetxt_w_list(dev_set, os.path.join(path, "dev.tsv"), num_lf=1)
+
+
+def kfold_list(list_data):
+
+    """
+    sklearn.model_selection.train_test_split
+    """
+    pass
 
 
 def kfold_df(df, save_dir=None):
