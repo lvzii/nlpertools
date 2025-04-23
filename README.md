@@ -91,11 +91,10 @@ b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
 
 ```bash
 # 生成pypi双因素认证的实时密钥(需要提供key)
-python -m nlpertools.cli --get_2fa --get_2fa_key your_key
+ncli --get_2fa --get_2fa_key your_key
 
 ## git
-python -m nlpertools.cli --git_push
-python -m nlpertools.cli --git_pull
+ncli git pull/push
 
 # 以下功能被nvitop替代，不推荐使用
 ## 监控gpu显存

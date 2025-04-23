@@ -19,6 +19,18 @@ other_special_characters = (
     "」﴾》"
 )
 
+def startwith(text: str, pattern_list: list) -> bool:
+    """
+    判断text是否以pattern_list中的某个pattern开头
+    :param text:
+    :param pattern_list:
+    :return:
+    """
+    for pattern in pattern_list:
+        if text.startswith(pattern):
+            return True
+    return False
+
 
 class Pattern:
     """

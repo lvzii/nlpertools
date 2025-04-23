@@ -2,39 +2,24 @@ import argparse
 import os
 import uuid
 import sys
-
-"""
-如何Debug cli.py
-"""
+from .dataprocess import startwith
 
 
-def git_push():
+def run_git_command(command):
     """
-    针对国内提交github经常失败，自动提交
+    循环执行git命令，直到成功
     """
+    print(command)
     num = -1
-    while 1:
+    while True:
         num += 1
-        print("retry num: {}".format(num))
-        info = os.system("git push --set-upstream origin main")
+        print(f"retry num: {num}")
+        info = os.system(command)
         print(str(info))
-        if not str(info).startswith("fatal"):
-            print("scucess")
-            break
-
-
-def git_pull():
-    """
-    针对国内提交github经常失败，自动提交
-    """
-    num = -1
-    while 1:
-        num += 1
-        print("retry num: {}".format(num))
-        info = os.system("git pull")
-        print(str(info))
-        if not str(info).startswith("fatal") and not str(info).startswith("error"):
-            print("scucess")
+        # 检查命令执行结果，若未出现错误则认为执行成功
+        if not startwith(str(info), ["fatal", "error", "128"]):
+            print("success")
+            print(f"success info : ##{info}##")
             break
 
 
@@ -108,22 +93,19 @@ def start_gpu_usage_notify_client():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="CLI tool for git operations and getting MAC address.")
-    parser.add_argument('--gitpush', action='store_true', help='Perform git push operation.')
-    parser.add_argument('--gitpull', action='store_true', help='Perform git pull operation.')
+    parser = argparse.ArgumentParser(description="CLI tool for git operations and other functions.")
+    parser.add_argument('git_command', nargs='*', help='Any git command (e.g., push, pull)')
     parser.add_argument('--mac_address', action='store_true', help='Get the MAC address.')
-
     parser.add_argument('--get_2fa', action='store_true', help='Get the 2fa value.')
     parser.add_argument('--get_2fa_key', type=str, help='Get the 2fa value.')
-    parser.add_argument('--monitor_gpu_cli', action='store_true', help='Get the 2fa value.')
-    parser.add_argument('--monitor_gpu_ser', action='store_true', help='Get the 2fa value.')
+    parser.add_argument('--monitor_gpu_cli', action='store_true', help='monitor gpu cli')
+    parser.add_argument('--monitor_gpu_ser', action='store_true', help='monitor gpu ser')
 
     args = parser.parse_args()
 
-    if args.gitpush:
-        git_push()
-    elif args.gitpull:
-        git_pull()
+    if args.git_command:
+        git_cmd = " ".join(args.git_command)
+        run_git_command(git_cmd)
     elif args.mac_address:
         get_mac_address()
     elif args.monitor_gpu_cli:
