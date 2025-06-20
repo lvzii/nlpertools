@@ -14,6 +14,11 @@ This is a package of functions commonly used by NLP/data workers, which can simp
 and make the code more readable. It mainly includes two parts: basic reading and writing tools and data processing
 functions commonly used in machine learning/deep learning.
 
+What problem does it solve:
+
+- Many functions are hard to remember, and every time you need to search or ask a large model, e.g., pandas sorting.
+- When practicing coding problems, tree structure problems are hard to debug.
+
 ```
 nlpertools
  ├── mkdocs.yml # used in doc
@@ -21,6 +26,27 @@ nlpertools
  ├── pyproject.toml # used in pypi
  └── setup.cfg # used in pypi
 ```
+
+# Most commonly used/favorite features (usage examples)
+
+```python
+# Read txt, json files
+import nlpertools
+
+txt_data = nlpertools.readtxt_list_all_strip('res.txt')
+json_data = nlpertools.load_from_json('res.json')
+```
+
+```bash
+## git, very useful when github connection is unstable
+ncli git pull
+
+# Generate real-time key for pypi two-factor authentication (need to provide key)
+ncli --get_2fa --get_2fa_key your_key
+```
+
+# 
+
 
 # Install
 
@@ -66,31 +92,6 @@ https://nlpertools.readthedocs.io/en/latest/
 
 Write a function once, never write it twice!
 
-## Emample
-
-```python
-import nlpertools
-
-a = nlpertools.readtxt_list_all_strip('res.txt')
-# or
-b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
-```
-
-```bash
-# cli
-## get pypi 2af (need providing key)(need install pyotp)
-python -m nlpertools.get_2fa your_key
-
-## git
-python nlpertools.cli --git_push
-python nlpertools.cli --git_pull
-
-# [not recommend] recommend nvitop
-## monitor gpu memory
-python -m nlpertools.monitor.gpu
-## monitor cpu memory
-python -m  nlpertools.monitor.memory
-```
 
 ## Contribution
 

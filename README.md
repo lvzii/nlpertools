@@ -28,6 +28,23 @@ nlpertools
 
 ```
 
+# 最常用/喜欢的功能（使用示例）
+```python
+# 读txt, json文件
+import nlpertools
+
+txt_data = nlpertools.readtxt_list_all_strip('res.txt')
+json_data = nlpertools.load_from_json('res.json')
+```
+
+```bash
+## git, 连接github不稳定的时候非常有用
+ncli git pull
+
+# 生成pypi双因素认证的实时密钥(需要提供key)
+ncli --get_2fa --get_2fa_key your_key
+```
+
 # 安装
 
 Install the latest release version
@@ -79,33 +96,15 @@ https://nlpertools.readthedocs.io/en/latest/
 
 一些可能需要配置才能用的函数，写上示例
 
-## 使用示例
 
-```python
-import nlpertools
-
-a = nlpertools.readtxt_list_all_strip('res.txt')
-# 或
-b = nlpertools.io.file.readtxt_list_all_strip('res.txt')
-```
-
-```bash
-# 生成pypi双因素认证的实时密钥(需要提供key)
-ncli --get_2fa --get_2fa_key your_key
-
-## git
-ncli git pull/push
-
-# 以下功能被nvitop替代，不推荐使用
-## 监控gpu显存
-python -m nlpertools.monitor.gpu
-## 监控cpu
-python -m  nlpertools.monitor.memory
-```
 
 ## 一些常用项目
 
 nvitop
 
 ydata-profiling
+
+## 贡献
+
+https://github.com/bigscience-workshop/data-preparation
 
