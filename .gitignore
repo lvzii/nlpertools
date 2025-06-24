@@ -10,3 +10,6 @@ vene/
 __pycache__/
 
 src/test.py
+
+
+demo.*
