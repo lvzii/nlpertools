@@ -17,7 +17,7 @@ def run_git_command(command):
         info = os.system(command)
         print(str(info))
         # 检查命令执行结果，若未出现错误则认为执行成功
-        if not startwith(str(info), ["fatal", "error", "128"]):
+        if not startwith(str(info), ["fatal", "error", "128", "1"]):
             print("success")
             print(f"success info : ##{info}##")
             break
