@@ -15,11 +15,7 @@ def get_version():
 def main():
     setup(
         # https://juejin.cn/post/7369349560421040128
-        install_requires=[
-            "numpy",
-            "pandas",
-            "psutil"
-        ],
+        install_requires=["numpy", "pandas", "psutil", "openai"],
         extras_require={
             "torch": ["torch"],
         },
@@ -28,9 +24,9 @@ def main():
             "console_scripts": [
                 "ncli=nlpertools.cli:main",
             ]
-        }
+        },
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
