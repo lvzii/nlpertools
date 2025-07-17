@@ -2,9 +2,11 @@
 import codecs
 import os
 import random
+import itertools
 
 from .io.dir import j_mkdir
 from .io.file import readtxt_list_all_strip, writetxt_w_list, save_to_csv
+
 # import numpy as np
 # import seaborn as sns
 # import torch
@@ -21,6 +23,7 @@ def estimate_pass_at_k(num_samples: list, num_correct: list, k):
     """
     copy from https://huggingface.co/spaces/evaluate-metric/code_eval/blob/main/code_eval.py
     num_samples: list
+    Note: if num sample < k, acc = 1, it's incomprehensibly
     """
     """Estimates pass@k of each problem and returns them in an array."""
 
@@ -39,8 +42,21 @@ def estimate_pass_at_k(num_samples: list, num_correct: list, k):
     return np.array([estimator(int(n), int(c), k) for n, c in zip(num_samples_it, num_correct)])
 
 
+def estimate_pass_at_k_fixed(num_samples: list, num_correct: list, k):
+    """
+    优化了num_samples小于 k的情况
+    """
+    num_samples = [k if i < k else i for i in num_samples]
+    return estimate_pass_at_k(num_samples, num_correct, k)
+
+
+def estimate_pass_at_k_return_num(num_samples: list, num_correct: list, k):
+    """直接返回求完平均的"""
+    return round(estimate_pass_at_k(num_samples, num_correct, k).mean() * 100, 2)
+
+
 def calc_llm_train_activation_memory(
-        model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num, gpu_num=1
+    model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num, gpu_num=1
 ):
     """
     return bytes
@@ -54,18 +70,19 @@ def calc_llm_train_activation_memory(
     # FFN
     # Layer Norm
     r1 = (
-            sequence_length
-            * batch_size
-            * hidden_dim
-            * lay_number
-            * (34 + 5 * attention_heads_num * sequence_length / hidden_dim)
+        sequence_length
+        * batch_size
+        * hidden_dim
+        * lay_number
+        * (34 + 5 * attention_heads_num * sequence_length / hidden_dim)
     )
     # reference2
     r2 = (
-            lay_number * (2 * sequence_length * attention_heads_num + 16 * hidden_dim)
-            * sequence_length
-            * batch_size
-            / gpu_num
+        lay_number
+        * (2 * sequence_length * attention_heads_num + 16 * hidden_dim)
+        * sequence_length
+        * batch_size
+        / gpu_num
     )
     print(r1)
     print(r2)
@@ -100,9 +117,7 @@ class DataStructure:
         "source": "baidu",
     }
     ner_input_example = "这句话一共有两个实体分别为大象和老鼠。"
-    ner_label_example = (
-            list("OOOOOOOOOOOOO") + ["B-s", "I-s"] + ["O"] + ["B-o", "I-o"] + ["O"]
-    )
+    ner_label_example = list("OOOOOOOOOOOOO") + ["B-s", "I-s"] + ["O"] + ["B-o", "I-o"] + ["O"]
 
 
 def text_jaccard(ipt1, ipt2, ipt_level="char", sim_level="char"):
@@ -156,7 +171,7 @@ class STEM(object):
             if each_srl:
                 args = []
                 for arg in each_srl:
-                    args.extend(seg[arg[1]: arg[2] + 1])
+                    args.extend(seg[arg[1] : arg[2] + 1])
                 # 添加上谓词
                 args.insert(each_srl[0][2] - each_srl[0][1] + 1, seg[wdx])
                 events.append(args)
@@ -195,7 +210,7 @@ def subject_object_labeling(spo_list, text):
         q_list_length = len(q_list)
         k_list_length = len(k_list)
         for idx in range(k_list_length - q_list_length + 1):
-            t = [q == k for q, k in zip(q_list, k_list[idx: idx + q_list_length])]
+            t = [q == k for q, k in zip(q_list, k_list[idx : idx + q_list_length])]
             # print(idx, t)
             if all(t):
                 # print(idx)
@@ -208,9 +223,7 @@ def subject_object_labeling(spo_list, text):
         if len(spo) == 2:
             labeling_list[idx_start + 1] = "I-" + spo_type
         elif len(spo) >= 3:
-            labeling_list[idx_start + 1: idx_start + len(spo)] = ["I-" + spo_type] * (
-                    len(spo) - 1
-            )
+            labeling_list[idx_start + 1 : idx_start + len(spo)] = ["I-" + spo_type] * (len(spo) - 1)
         else:
             pass
 
@@ -219,7 +232,7 @@ def subject_object_labeling(spo_list, text):
     # count = 0
     for predicate, spo_list_form in spo_predicate_dict.items():
         if predicate in text:
-            for (spo_subject, spo_object) in spo_list_form:
+            for spo_subject, spo_object in spo_list_form:
                 # if predicate not in spo_subject and predicate not in spo_object:
                 _labeling_type(spo_subject, "SUB")
                 _labeling_type(spo_object, "OBJ")
@@ -241,10 +254,7 @@ def label(text, labels):
     :return:
     """
     train_sequence = "\n".join(
-        [
-            "\t".join(i) if i[0] != " " else "[null]\t{}".format(i[1])
-            for i in zip(list(text), labels)
-        ]
+        ["\t".join(i) if i[0] != " " else "[null]\t{}".format(i[1]) for i in zip(list(text), labels)]
     )
     return train_sequence
 
@@ -260,16 +270,12 @@ def convert_crf_format_10_fold(corpus, objdir_path):
     split_position = int(len(corpus) / 10)
     for k in range(0, 10):
         if k == 9:
-            dev_set = corpus[k * split_position:]
+            dev_set = corpus[k * split_position :]
             train_set = corpus[: k * split_position]
         else:
-            dev_set = corpus[k * split_position: (k + 1) * split_position]
-            train_set = (
-                    corpus[: k * split_position] + corpus[(k + 1) * split_position:]
-            )
-        writetxt_w_list(
-            train_set, os.path.join(objdir_path, "train{}.txt".format(k + 1))
-        )
+            dev_set = corpus[k * split_position : (k + 1) * split_position]
+            train_set = corpus[: k * split_position] + corpus[(k + 1) * split_position :]
+        writetxt_w_list(train_set, os.path.join(objdir_path, "train{}.txt".format(k + 1)))
         writetxt_w_list(dev_set, os.path.join(objdir_path, "test{}.txt".format(k + 1)))
         writetxt_w_list(dev_set, os.path.join(objdir_path, "dev{}.txt".format(k + 1)))
 
@@ -311,11 +317,13 @@ def sample():
 
     # 假设 df 是你的 DataFrame
 
-    df = pd.DataFrame({
-        "count_line": [i for i in range(100)],
-        "x": [i for i in range(100)],
-        "y": [i // 10 for i in range(100)],
-    })
+    df = pd.DataFrame(
+        {
+            "count_line": [i for i in range(100)],
+            "x": [i for i in range(100)],
+            "y": [i // 10 for i in range(100)],
+        }
+    )
     print(df)
     # count_line 是用于分层抽样的字段
 
@@ -323,7 +331,7 @@ def sample():
     split = StratifiedShuffleSplit(n_splits=1, test_size=0.1, random_state=42)
 
     # 获取训练集和测试集的索引
-    train_index, test_index = next(split.split(df, df['y']))
+    train_index, test_index = next(split.split(df, df["y"]))
 
     # 根据索引划分训练集和测试集
     train_df = df.loc[train_index]
@@ -342,14 +350,13 @@ def kfold_txt(corpus, path, k=9, is_shuffle=True):
     if is_shuffle:
         random.shuffle(corpus)
     split_position = int(len(corpus) / 10)
-    train_set, dev_set = corpus[: k * split_position], corpus[k * split_position:]
+    train_set, dev_set = corpus[: k * split_position], corpus[k * split_position :]
     writetxt_w_list(train_set, os.path.join(path, "train.tsv"), num_lf=1)
     writetxt_w_list(dev_set, os.path.join(path, "test.tsv"), num_lf=1)
     writetxt_w_list(dev_set, os.path.join(path, "dev.tsv"), num_lf=1)
 
 
 def kfold_list(list_data):
-
     """
     sklearn.model_selection.train_test_split
     """
@@ -368,9 +375,7 @@ def kfold_df(df, save_dir=None):
 
     train_idx, test_and_val_idx = KFold(n_splits=8, shuffle=True).split(df).__next__()
     df_test_and_val = df.iloc[test_and_val_idx]
-    test_idx, val_idx = (
-        KFold(n_splits=2, shuffle=True).split(df_test_and_val).__next__()
-    )
+    test_idx, val_idx = KFold(n_splits=2, shuffle=True).split(df_test_and_val).__next__()
     df_train = df.iloc[train_idx]
     df_val = df.iloc[val_idx]
     df_test = df.iloc[test_idx]
@@ -447,7 +452,7 @@ def split_sentence(sentence, language="chinese", cross_line=True):
     for idx, char in enumerate(sentence):
         if idx == len(sentence) - 1:
             if char in split_signs:
-                sentences.append(sentence[start_idx: idx + 1].strip())
+                sentences.append(sentence[start_idx : idx + 1].strip())
                 start_idx = idx + 1
             else:
                 sentences.append(sentence[start_idx:].strip())
@@ -457,10 +462,10 @@ def split_sentence(sentence, language="chinese", cross_line=True):
                     if idx < len(sentence) - 2:
                         # 处理。”。
                         if sentence[idx + 2] not in split_signs:
-                            sentences.append(sentence[start_idx: idx + 2].strip())
+                            sentences.append(sentence[start_idx : idx + 2].strip())
                             start_idx = idx + 2
                 elif sentence[idx + 1] not in split_signs:
-                    sentences.append(sentence[start_idx: idx + 1].strip())
+                    sentences.append(sentence[start_idx : idx + 1].strip())
                     start_idx = idx + 1
     return sentences
 
@@ -536,6 +541,6 @@ if __name__ == "__main__":
         hidden_dim=4096,
         lay_number=28,
         attention_heads_num=32,
-        gpu_num=1
+        gpu_num=1,
     )
     print(res, "G")
