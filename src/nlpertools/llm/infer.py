@@ -2,6 +2,7 @@ import os
 from tqdm import tqdm
 from openai import OpenAI
 import concurrent.futures
+import random
 
 
 INFER_PARAS = {
@@ -29,6 +30,37 @@ def common_api_infer_func(model_name, infer_data: list, infer_paras, client: Ope
     messages = parse_infer_data(infer_data)
 
     def get_response(model_name, messages, infer_paras):
+        responses = []
+        infer_times = infer_paras.get("infer_times", 1)
+
+        for _ in range(infer_times):
+            # 使用OpenAI API进行推理
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                temperature=infer_paras.get("temperature", 0.7),
+                max_tokens=infer_paras.get("max_tokens", 8192),
+            )
+            text = response.choices[0].message.content
+            responses.append({"text": text})
+        return responses
+
+    with concurrent.futures.ThreadPoolExecutor(16) as executor:
+        futures = [executor.submit(get_response, model_name, message, infer_paras) for message in messages]
+        # results = [future.result() for future in tqdm(concurrent.futures.as_completed(futures))] # 乱序
+        results = [future.result() for future in tqdm(futures)]
+
+    return results
+
+
+def common_api_infer_func_multi_client(model_name, infer_data: list, infer_paras, clients: list[OpenAI]):
+    """
+    infer_data: list of messages/prompt
+    """
+    messages = parse_infer_data(infer_data)
+
+    def get_response(model_name, messages, infer_paras):
+        client = random.choice(clients)
         responses = []
         infer_times = infer_paras.get("infer_times", 1)
         for _ in range(infer_times):
