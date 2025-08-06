@@ -1,7 +1,7 @@
 from ..io.file import readtxt_string, read_yaml
 from tqdm import tqdm
 import os
-from openai import Openai
+from openai import OpenAI
 from typing import Optional, Union
 
 """
@@ -10,7 +10,7 @@ from typing import Optional, Union
 
 
 def call_once(
-    client: Openai, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192
+    client: OpenAI, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192
 ) -> str:
     """
     调用LLM模型进行一次推理

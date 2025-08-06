@@ -53,26 +53,40 @@ def common_api_infer_func(model_name, infer_data: list, infer_paras, client: Ope
     return results
 
 
+import itertools
+
+
 def common_api_infer_func_multi_client(model_name, infer_data: list, infer_paras, clients: list[OpenAI]):
     """
     infer_data: list of messages/prompt
     """
     messages = parse_infer_data(infer_data)
+    iter_cycle = itertools.cycle(clients)
 
     def get_response(model_name, messages, infer_paras):
-        client = random.choice(clients)
+        client = next(iter_cycle)
+        # print(client.base_url)
         responses = []
         infer_times = infer_paras.get("infer_times", 1)
         for _ in range(infer_times):
             # 使用OpenAI API进行推理
-            response = client.chat.completions.create(model=model_name, messages=messages, **infer_paras)
-            text = response.choices[0].message.content
+            try:
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=messages,
+                    temperature=infer_paras.get("temperature", 0.7),
+                    max_tokens=infer_paras.get("max_tokens", 8192),
+                )
+                text = response.choices[0].message.content
+            except Exception as e:
+                print(e.__str__())
+                text = ""
             responses.append({"text": text})
         return responses
 
-    with concurrent.futures.ThreadPoolExecutor(16) as executor:
+    with concurrent.futures.ThreadPoolExecutor(128) as executor:
         futures = [executor.submit(get_response, model_name, message, infer_paras) for message in messages]
-        results = [future.result() for future in concurrent.futures.as_completed(futures)]
+        results = [future.result() for future in tqdm(futures)]
 
     return results
 
