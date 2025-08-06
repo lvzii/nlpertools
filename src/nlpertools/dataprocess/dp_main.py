@@ -8,7 +8,7 @@ from typing import List
 import numpy as np
 
 # from . import DB_CONFIG_FILE # cannot import name 'DB_CONFIG_FILE' from partially initialized module 'nlpertools'
-from .utils.package import *
+from ..utils.package import *
 
 main_special_characters = string.punctuation + string.digits + string.whitespace
 other_special_characters = (

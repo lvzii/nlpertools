@@ -4,7 +4,8 @@
 from .algo.kmp import *
 from .data_structure.base_structure import *
 from .draw import *
-from .dataprocess import *
+from .dataprocess.dp_main import *
+from .dataprocess.dedupl import *
 from .io.dir import *
 from .io.file import *
 from .ml import *
@@ -20,4 +21,4 @@ from .cli import *
 from .llm import *
 
 
-__version__ = "1.0.10"
+__version__ = "1.0.11"

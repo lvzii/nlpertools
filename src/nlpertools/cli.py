@@ -2,7 +2,7 @@ import argparse
 import os
 import uuid
 import sys
-from .dataprocess import startwith
+from .dataprocess.dp_main import startwith
 
 
 def run_git_command(command):
@@ -25,7 +25,7 @@ def run_git_command(command):
 
 def get_mac_address():
     mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
-    mac_address = ":".join([mac[e:e + 2] for e in range(0, 11, 2)])
+    mac_address = ":".join([mac[e : e + 2] for e in range(0, 11, 2)])
     print("mac address 不一定准确")
     print(mac_address)
     return mac_address
@@ -33,6 +33,7 @@ def get_mac_address():
 
 def get_2af_value(key):
     import pyotp
+
     """
     key应该是7位的
     """
@@ -65,15 +66,11 @@ def start_gpu_usage_notify_client():
     from plyer import notification
     import time
 
-    SERVER_URL = 'http://127.0.0.1:5000/notify'  # 服务器的 API 地址
+    SERVER_URL = "http://127.0.0.1:5000/notify"  # 服务器的 API 地址
 
     def notify(text):
         # 使用 plyer 发送通知
-        notification.notify(
-            title='远程通知',
-            message=text,
-            timeout=10  # 10秒的通知显示时间
-        )
+        notification.notify(title="远程通知", message=text, timeout=10)  # 10秒的通知显示时间
 
     """定时轮询服务器获取通知"""
     while True:
@@ -94,12 +91,12 @@ def start_gpu_usage_notify_client():
 
 def main():
     parser = argparse.ArgumentParser(description="CLI tool for git operations and other functions.")
-    parser.add_argument('git_command', nargs='*', help='Any git command (e.g., push, pull)')
-    parser.add_argument('--mac_address', action='store_true', help='Get the MAC address.')
-    parser.add_argument('--get_2fa', action='store_true', help='Get the 2fa value.')
-    parser.add_argument('--get_2fa_key', type=str, help='Get the 2fa value.')
-    parser.add_argument('--monitor_gpu_cli', action='store_true', help='monitor gpu cli')
-    parser.add_argument('--monitor_gpu_ser', action='store_true', help='monitor gpu ser')
+    parser.add_argument("git_command", nargs="*", help="Any git command (e.g., push, pull)")
+    parser.add_argument("--mac_address", action="store_true", help="Get the MAC address.")
+    parser.add_argument("--get_2fa", action="store_true", help="Get the 2fa value.")
+    parser.add_argument("--get_2fa_key", type=str, help="Get the 2fa value.")
+    parser.add_argument("--monitor_gpu_cli", action="store_true", help="monitor gpu cli")
+    parser.add_argument("--monitor_gpu_ser", action="store_true", help="monitor gpu ser")
 
     args = parser.parse_args()
 
@@ -121,5 +118,5 @@ def main():
         print("No operation specified.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
