@@ -40,6 +40,8 @@ json_data = nlpertools.load_from_json('res.json')
 ```bash
 ## git, 连接github不稳定的时候非常有用
 ncli git pull
+## 带有参数时，加上--以避免-u被解析
+ncli -- git push -u origin main
 
 # 生成pypi双因素认证的实时密钥(需要提供key)
 ncli --get_2fa --get_2fa_key your_key
