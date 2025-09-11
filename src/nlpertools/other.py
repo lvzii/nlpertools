@@ -13,7 +13,10 @@ import math
 import datetime
 import difflib
 import psutil
+import sys
+
 from .io.file import writetxt_w_list, writetxt_a
+
 # import numpy as np
 # import psutil
 # import pyquery as pq
@@ -25,9 +28,9 @@ from .io.file import writetxt_w_list, writetxt_a
 # from win32evtlogutil import langid
 from .utils.package import *
 
-CHINESE_PUNCTUATION = list('，。；：‘’“”！？《》「」【】<>（）、')
-ENGLISH_PUNCTUATION = list(',.;:\'"!?<>()')
-OTHER_PUNCTUATION = list('!@#$%^&*')
+CHINESE_PUNCTUATION = list("，。；：‘’“”！？《》「」【】<>（）、")
+ENGLISH_PUNCTUATION = list(",.;:'\"!?<>()")
+OTHER_PUNCTUATION = list("!@#$%^&*")
 
 
 def setup_logging(log_file):
@@ -40,9 +43,21 @@ def setup_logging(log_file):
     logging.basicConfig(
         filename=log_file,
         level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
+
+
+def stop():
+    sys.exit()
+
+
+def exit():
+    sys.exit()
+
+
+def round2(num):
+    return round(num * 100, 2)
 
 
 def get_diff_parts(str1, str2):
@@ -52,7 +67,7 @@ def get_diff_parts(str1, str2):
     # 获取差异部分
     diff_parts = []
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-        if tag == 'replace' or tag == 'delete' or tag == 'insert':
+        if tag == "replace" or tag == "delete" or tag == "insert":
             diff_parts.append((tag, str1[i1:i2], str2[j1:j2]))
 
     return diff_parts
@@ -62,8 +77,9 @@ def run_cmd_with_timeout(cmd, timeout):
     """
     https://juejin.cn/post/7391703459803086848
     """
-    process = subprocess.Popen(cmd, shell=True, encoding="utf-8", errors="ignore", stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        cmd, shell=True, encoding="utf-8", errors="ignore", stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     res = [None]
 
     def target():
@@ -144,8 +160,11 @@ def print_three_line_table(df):
             border-bottom: (third_line_px)px solid black;
         }
     </style>"""
-    style = style.replace("(first_line_px)", first_line_px).replace("(second_line_px)", second_line_px).replace(
-        "(third_line_px)", third_line_px)
+    style = (
+        style.replace("(first_line_px)", first_line_px)
+        .replace("(second_line_px)", second_line_px)
+        .replace("(third_line_px)", third_line_px)
+    )
     # 将 CSS 样式和 HTML 表格结合起来
     html = f"{style}{html_table}"
     print(html)
@@ -153,7 +172,7 @@ def print_three_line_table(df):
     # 将 HTML 保存到文件中
     with open(temp_file_path, "w") as f:
         f.write(html)
-    webbrowser.open('file://' + os.path.realpath(temp_file_path))
+    webbrowser.open("file://" + os.path.realpath(temp_file_path))
 
 
 def jprint(obj, depth=0):
@@ -178,6 +197,7 @@ def print_split(sign="=", num=20, char: str = None):
 
 def seed_everything():
     import torch
+
     # seed everything
     seed = 7777777
     np.random.seed(seed)
@@ -192,22 +212,23 @@ def sent_email(mail_user, mail_pass, receiver, title, content, attach_path=None)
     from email.mime.text import MIMEText
     from email.mime.application import MIMEApplication
 
-    mail_host = 'smtp.qq.com'
+    mail_host = "smtp.qq.com"
     mail_user = mail_user
     mail_pass = mail_pass
     sender = mail_user
 
     message = MIMEMultipart()
-    message.attach(MIMEText(content, 'plain', 'utf-8'))
+    message.attach(MIMEText(content, "plain", "utf-8"))
     if attach_path:
-        attachment = MIMEApplication(open(attach_path, 'rb').read())
-        attachment["Content-Type"] = 'application/octet-stream'
-        attachment.add_header('Content-Dispositon', 'attachment',
-                              filename=('utf-8', '', attach_path))  # 注意：此处basename要转换为gbk编码，否则中文会有乱码。
+        attachment = MIMEApplication(open(attach_path, "rb").read())
+        attachment["Content-Type"] = "application/octet-stream"
+        attachment.add_header(
+            "Content-Dispositon", "attachment", filename=("utf-8", "", attach_path)
+        )  # 注意：此处basename要转换为gbk编码，否则中文会有乱码。
         message.attach(attachment)
-    message['Subject'] = title
-    message['From'] = sender
-    message['To'] = receiver
+    message["Subject"] = title
+    message["From"] = sender
+    message["To"] = receiver
 
     try:
         smtp_obj = smtplib.SMTP()
@@ -215,9 +236,9 @@ def sent_email(mail_user, mail_pass, receiver, title, content, attach_path=None)
         smtp_obj.login(mail_user, mail_pass)
         smtp_obj.sendmail(sender, receiver, message.as_string())
         smtp_obj.quit()
-        print('send email success')
+        print("send email success")
     except smtplib.SMTPException as e:
-        print('send failed', e)
+        print("send failed", e)
 
 
 def convert_np_to_py(obj):
@@ -247,12 +268,12 @@ def camel_to_snake(s: str) -> str:
     :param s: camel case variable
     :return:
     """
-    return reduce(lambda x, y: x + ('_' if y.isupper() else '') + y, s).lower()
+    return reduce(lambda x, y: x + ("_" if y.isupper() else "") + y, s).lower()
 
 
 # other ----------------------------------------------------------------------
 # 统计词频
-def calc_word_count(list_word, mode, path='tempcount.txt', sort_id=1, is_reverse=True):
+def calc_word_count(list_word, mode, path="tempcount.txt", sort_id=1, is_reverse=True):
     word_count = {}
     for key in list_word:
         if key not in word_count:
@@ -260,20 +281,20 @@ def calc_word_count(list_word, mode, path='tempcount.txt', sort_id=1, is_reverse
         else:
             word_count[key] += 1
     word_dict_sort = sorted(word_count.items(), key=lambda x: x[sort_id], reverse=is_reverse)
-    if mode == 'w':
+    if mode == "w":
         for key in word_dict_sort:
-            writetxt_a(str(key[0]) + '\t' + str(key[1]) + '\n', path)
-    elif mode == 'p':
+            writetxt_a(str(key[0]) + "\t" + str(key[1]) + "\n", path)
+    elif mode == "p":
         for key in word_dict_sort:
-            print(str(key[0]) + '\t' + str(key[1]))
-    elif mode == 'u':
+            print(str(key[0]) + "\t" + str(key[1]))
+    elif mode == "u":
         return word_dict_sort
 
 
 # 字典去重
 def dupl_dict(dict_list, key):
     new_dict_list, value_set = [], []
-    print('去重中...')
+    print("去重中...")
     for i in tqdm(dict_list):
         if i[key] not in value_set:
             new_dict_list.append(i)
@@ -288,9 +309,9 @@ def multi_thread_run(_task, data):
 
 
 def del_special_char(sentence):
-    special_chars = ['\ufeff', '\xa0', '\u3000', '\xa0', '\ue627']
+    special_chars = ["\ufeff", "\xa0", "\u3000", "\xa0", "\ue627"]
     for i in special_chars:
-        sentence = sentence.replace(i, '')
+        sentence = sentence.replace(i, "")
     return sentence
 
 
@@ -306,20 +327,20 @@ def spider(url):
     :param url:
     :return:
     """
-    if 'baijiahao' in url:
+    if "baijiahao" in url:
         content = requests.get(url)
         # print(content.text)
         html = pq.PyQuery(content.text)
-        title = html('.index-module_articleTitle_28fPT').text()
-        res = html('.index-module_articleWrap_2Zphx').text().rstrip('举报/反馈')
-        return '{}\n{}'.format(title, res)
+        title = html(".index-module_articleTitle_28fPT").text()
+        res = html(".index-module_articleWrap_2Zphx").text().rstrip("举报/反馈")
+        return "{}\n{}".format(title, res)
 
 
 def eda(sentence):
-    url = 'https://x.x.x.x:x/eda'
+    url = "https://x.x.x.x:x/eda"
     json_data = dict({"sentence": sentence})
     res = requests.post(url, json=json_data)
-    return res.json()['eda']
+    return res.json()["eda"]
 
 
 def find_language(text):
@@ -353,8 +374,8 @@ def print_prf(y_true, y_pred, label=None):
     for i in range(len(label)):
         res = []
         for k in result:
-            res.append('%.5f' % k[i])
-        print('{}: {} {} {}'.format(label[i], *res[:3]))
+            res.append("%.5f" % k[i])
+        print("{}: {} {} {}".format(label[i], *res[:3]))
 
 
 def print_cpu():
@@ -375,14 +396,16 @@ def squeeze_list(high_dim_list):
 
 def unsqueeze_list(flatten_list, each_element_len):
     # 该函数是错的，被split_list替代了
-    two_dim_list = [flatten_list[i * each_element_len:(i + 1) * each_element_len] for i in
-                    range(len(flatten_list) // each_element_len)]
+    two_dim_list = [
+        flatten_list[i * each_element_len : (i + 1) * each_element_len]
+        for i in range(len(flatten_list) // each_element_len)
+    ]
     return two_dim_list
 
 
 def split_list(input_list, chunk_size):
     # 使用列表推导式将列表分割成二维数组
-    return [input_list[i:i + chunk_size] for i in range(0, len(input_list), chunk_size)]
+    return [input_list[i : i + chunk_size] for i in range(0, len(input_list), chunk_size)]
 
 
 def auto_close():
@@ -392,6 +415,7 @@ def auto_close():
     import pyautogui as pg
     import time
     import os
+
     cmd = 'schtasks /create /tn shut /tr "shutdown -s -f" /sc once /st 23:30'
     os.system(cmd)
     while 1:
@@ -405,10 +429,13 @@ def tf_idf(corpus, save_path):
     vectorizer = CountVectorizer()  # 该类会将文本中的词语转换为词频矩阵，矩阵元素a[i][j] 表示j词在i类文本下的词频
     transformer = TfidfTransformer()  # 该类会统计每个词语的tf-idf权值
     tfidf = transformer.fit_transform(
-        vectorizer.fit_transform(corpus))  # 第一个fit_transform是计算tf-idf，第二个fit_transform是将文本转为词频矩阵
+        vectorizer.fit_transform(corpus)
+    )  # 第一个fit_transform是计算tf-idf，第二个fit_transform是将文本转为词频矩阵
     word = vectorizer.get_feature_names()  # 获取词袋模型中的所有词语
     weight = tfidf.toarray()  # 将tf-idf矩阵抽取出来，元素a[i][j]表示j词在i类文本中的tf-idf权重
-    for i in range(len(weight)):  # 打印每类文本的tf-idf词语权重，第一个for遍历所有文本，第二个for便利某一类文本下的词语权重
+    for i in range(
+        len(weight)
+    ):  # 打印每类文本的tf-idf词语权重，第一个for遍历所有文本，第二个for便利某一类文本下的词语权重
         for j in range(len(word)):
             getword = word[j]
             getvalue = weight[i][j]
@@ -418,7 +445,7 @@ def tf_idf(corpus, save_path):
                 else:
                     tfidfdict.update({getword: getvalue})
     sorted_tfidf = sorted(tfidfdict.items(), key=lambda d: d[1], reverse=True)
-    to_write = ['{} {}'.format(i[0], i[1]) for i in sorted_tfidf]
+    to_write = ["{} {}".format(i[0], i[1]) for i in sorted_tfidf]
     writetxt_w_list(to_write, save_path, num_lf=1)
 
 
@@ -427,7 +454,7 @@ class GaussDecay(object):
     当前只实现了时间的，全部使用默认值
     """
 
-    def __init__(self, origin='2022-08-02', scale='90d', offset='5d', decay=0.5, task="time"):
+    def __init__(self, origin="2022-08-02", scale="90d", offset="5d", decay=0.5, task="time"):
         self.origin = origin
         self.task = task
         self.scale, self.offset = self.translate(scale, offset)
@@ -451,7 +478,7 @@ class GaussDecay(object):
     @staticmethod
     def translated_minus(field_value):
         origin = datetime.datetime.now()
-        field_value = datetime.datetime.strptime(field_value, '%Y-%m-%d %H:%M:%S')
+        field_value = datetime.datetime.strptime(field_value, "%Y-%m-%d %H:%M:%S")
         return (origin - field_value).days
 
     def calc_exp(self):
@@ -469,13 +496,13 @@ class GaussDecay(object):
         :return:
         """
         numerator = max(0, (abs(self.translated_minus(field_value)) - self.offset)) ** 2
-        sigma_square = -1 * self.scale ** 2 / (2 * math.log(self.decay, math.e))
+        sigma_square = -1 * self.scale**2 / (2 * math.log(self.decay, math.e))
         denominator = 2 * sigma_square
         s = math.exp(-1 * numerator / denominator)
         return round(self.time_coefficient * s + self.related_coefficient * raw_score, 7)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     gauss_decay = GaussDecay()
     res = gauss_decay.calc_gauss(raw_score=1, field_value="2021-05-29 14:31:13")
     print(res)
