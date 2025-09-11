@@ -3,6 +3,7 @@
 # @Author  : youshu.Ji
 import os
 from pathlib import Path
+from typing import overload,Literal,Union
 
 
 # dir ----------------------------------------------------------------------
@@ -45,14 +46,33 @@ def get_filename(path, suffix=True) -> str:
         filename = filename.split('.')[0]
     return filename
 
+"""
+因为os.listdir无法支持Path类型，虽然是bytelikepath,但是传入Path后只会返回字符串
+且无法只返回文件名
+故重新实现
+"""
+@overload
+def listdir(dir_name: Path, including_dir: Literal[True]) -> list[Path]: ...
+@overload
+def listdir(dir_name: str, including_dir: Literal[True]) -> list[str]: ...
+@overload
+def listdir(dir_name: Path, including_dir: Literal[False] = False) -> list[str]: ...
+@overload
+def listdir(dir_name: str, including_dir: Literal[False] = False) -> list[str]: ...
 
-def listdir(dir_name, including_dir=True):
-    filenames = os.listdir(dir_name)
+def listdir(dir_name: Union[Path, str], including_dir: bool = False) -> list[Path] | list[str]:
+    """
+    including_dir=True -> list[Path] or list[str]
+    including_dir=False -> list[str]
+    """
+    filenames = os.listdir(str(dir_name))
     if including_dir:
-        return [os.path.join(dir_name, filename) for filename in filenames]
+        if isinstance(dir_name, Path):
+            return [dir_name / filename for filename in filenames]
+        else:
+            return [os.path.join(dir_name, filename) for filename in filenames]
     else:
         return list(filenames)
-
 
 def listdir_yield(dir_name, including_dir=True):
     filenames = os.listdir(dir_name)
