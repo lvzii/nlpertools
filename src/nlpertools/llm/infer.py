@@ -1,8 +1,7 @@
 import os
 from tqdm import tqdm
-from openai import OpenAI
 import concurrent.futures
-import random
+import itertools
 
 
 INFER_PARAS = {
@@ -23,7 +22,9 @@ def parse_infer_data(infer_data: list):
     return message
 
 
-def common_api_infer_func(model_name, infer_data: list, infer_paras, client: OpenAI):
+def common_api_infer_func(model_name, infer_data: list, infer_paras, client):
+    from openai import OpenAI
+
     """
     infer_data: list of messages/prompt
     """
@@ -53,13 +54,12 @@ def common_api_infer_func(model_name, infer_data: list, infer_paras, client: Ope
     return results
 
 
-import itertools
-
-
-def common_api_infer_func_multi_client(model_name, infer_data: list, infer_paras, clients: list[OpenAI]):
+def common_api_infer_func_multi_client(model_name, infer_data: list, infer_paras, clients: list):
     """
     infer_data: list of messages/prompt
     """
+    from openai import OpenAI
+
     messages = parse_infer_data(infer_data)
     iter_cycle = itertools.cycle(clients)
 

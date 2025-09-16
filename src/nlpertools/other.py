@@ -3,7 +3,6 @@
 # @Author  : youshu.Ji
 import itertools
 import os
-import re
 import string
 import subprocess
 import threading

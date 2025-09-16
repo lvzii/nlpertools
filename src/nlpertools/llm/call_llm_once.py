@@ -1,7 +1,6 @@
 from ..io.file import read_yaml
 from tqdm import tqdm
 import os
-from openai import OpenAI
 from typing import Optional, Union
 
 """
@@ -10,7 +9,7 @@ from typing import Optional, Union
 
 
 def call_once_stream(
-    client: OpenAI, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192
+    client, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192, temperature=0.2
 ) -> str:
     """
     调用LLM模型进行一次推理
@@ -19,6 +18,7 @@ def call_once_stream(
     :param max_tokens: 最大输出token数
     :return: 模型的输出文本
     """
+    from openai import OpenAI
 
     if isinstance(input, str):
         message = [{"role": "user", "content": input}]
@@ -39,7 +39,7 @@ def call_once_stream(
 
 
 def call_once(
-    client: OpenAI, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192
+    client, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192, temperature=0.8
 ) -> str:
     """
     调用LLM模型进行一次推理
@@ -48,12 +48,13 @@ def call_once(
     :param max_tokens: 最大输出token数
     :return: 模型的输出文本
     """
+    from openai import OpenAI
 
     if isinstance(input, str):
         message = [{"role": "user", "content": input}]
     elif isinstance(input, list):
         message = input
 
-    response = client.chat.completions.create(model=model_name, messages=message, max_tokens=max_tokens)
+    response = client.chat.completions.create(model=model_name, messages=message, max_tokens=max_tokens,temperature=temperature)
 
     return response.choices[0].message.content

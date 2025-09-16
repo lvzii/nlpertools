@@ -37,20 +37,19 @@ def lazy_import(importer_name, to_import):
     module = importlib.import_module(importer_name)
     import_mapping = {}
     for name in to_import:
-        importing, _, binding = name.partition(' as ')
+        importing, _, binding = name.partition(" as ")
         if not binding:
-            _, _, binding = importing.rpartition('.')
+            _, _, binding = importing.rpartition(".")
         import_mapping[binding] = importing
 
     def __getattr__(name):
         if name not in import_mapping:
-            message = f'module {importer_name!r} has no attribute {name!r}'
+            message = f"module {importer_name!r} has no attribute {name!r}"
             raise AttributeError(message)
         importing = import_mapping[name]
         # imortlib.import_module() implicitly sets submodules on this module as
         # appropriate for direct imports.
-        imported = importlib.import_module(importing,
-                                           module.__spec__.parent)
+        imported = importlib.import_module(importing, module.__spec__.parent)
         setattr(module, name, imported)
         return imported
 
@@ -75,15 +74,15 @@ KafkaConsumer = try_import("kafka", "KafkaConsumer")
 np = try_import("numpy", None)
 plt = try_import("matplotlib", "pyplot")
 WordNetLemmatizer = try_import("nltk.stem", "WordNetLemmatizer")
-metrics = try_import("sklearn", "metrics")
+# metrics = try_import("sklearn", "metrics")
 requests = try_import("requests", None)
 pq = try_import("pyquery", None)
-CountVectorizer = try_import("sklearn.feature_extraction.text", "CountVectorizer")
-precision_recall_fscore_support = try_import("sklearn.metrics", "precision_recall_fscore_support")
+# CountVectorizer = try_import("sklearn.feature_extraction.text", "CountVectorizer")
+# precision_recall_fscore_support = try_import("sklearn.metrics", "precision_recall_fscore_support")
 tqdm = try_import("tqdm", "tqdm")
 # TODO 自动导出langid和win32evtlogutil输出有bug
 langid = try_import("langid", None)
 win32evtlogutil = try_import("win32evtlogutil", None)
-TfidfTransformer = try_import("sklearn.feature_extraction.text", "TfidfTransformer")
+# TfidfTransformer = try_import("sklearn.feature_extraction.text", "TfidfTransformer")
 yaml = try_import("yaml", None)
 omegaconf = try_import("omegaconf", None)
