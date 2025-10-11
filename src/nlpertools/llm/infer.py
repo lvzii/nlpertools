@@ -15,8 +15,9 @@ INFER_PARAS = {
 
 
 def parse_infer_data(infer_data: list):
+    # 解释一下为什么要[][]，因为message本来就必须得是[]
     if isinstance(infer_data[0], str):
-        message = [{"role": "user", "content": i} for i in infer_data]
+        message = [[{"role": "user", "content": i}] for i in infer_data]
     elif isinstance(infer_data[0], list):
         message = infer_data
     return message
@@ -58,8 +59,6 @@ def common_api_infer_func_multi_client(model_name, infer_data: list, infer_paras
     """
     infer_data: list of messages/prompt
     """
-    from openai import OpenAI
-
     messages = parse_infer_data(infer_data)
     iter_cycle = itertools.cycle(clients)
 
