@@ -3,7 +3,7 @@
 # @Author  : youshu.Ji
 import os
 from pathlib import Path
-from typing import overload,Literal,Union
+from typing import overload, Literal, Union
 
 
 # dir ----------------------------------------------------------------------
@@ -23,13 +23,13 @@ def j_walk(name, suffix=None):
 
 def windows_to_wsl_path(windows_path):
     # 转换驱动器号
-    if windows_path[1:3] == ':\\':
+    if windows_path[1:3] == ":\\":
         drive_letter = windows_path[0].lower()
-        path = windows_path[2:].replace('\\', '/')
-        wsl_path = f'/mnt/{drive_letter}{path}'
+        path = windows_path[2:].replace("\\", "/")
+        wsl_path = f"/mnt/{drive_letter}{path}"
     else:
         # 如果路径不是以驱动器号开头，则直接替换路径分隔符
-        wsl_path = windows_path.replace('\\', '/').replace("'", "\'")
+        wsl_path = windows_path.replace("\\", "/").replace("'", "'")
 
     return wsl_path
 
@@ -43,14 +43,17 @@ def get_filename(path, suffix=True) -> str:
     # path = r'***/**/***.txt'
     filename = os.path.split(path)[-1]
     if not suffix:
-        filename = filename.split('.')[0]
+        filename = filename.split(".")[0]
     return filename
+
 
 """
 因为os.listdir无法支持Path类型，虽然是bytelikepath,但是传入Path后只会返回字符串
 且无法只返回文件名
 故重新实现
 """
+
+
 @overload
 def listdir(dir_name: Path, including_dir: Literal[True]) -> list[Path]: ...
 @overload
@@ -60,19 +63,23 @@ def listdir(dir_name: Path, including_dir: Literal[False] = False) -> list[str]:
 @overload
 def listdir(dir_name: str, including_dir: Literal[False] = False) -> list[str]: ...
 
+
 def listdir(dir_name: Union[Path, str], including_dir: bool = False) -> list[Path] | list[str]:
     """
     including_dir=True -> list[Path] or list[str]
     including_dir=False -> list[str]
     """
     filenames = os.listdir(str(dir_name))
-    if including_dir:
-        if isinstance(dir_name, Path):
+    match (including_dir, isinstance(dir_name, Path)):
+        case (True, True):
             return [dir_name / filename for filename in filenames]
-        else:
+        case (True, False):
             return [os.path.join(dir_name, filename) for filename in filenames]
-    else:
-        return list(filenames)
+        case (False, True):
+            return [Path(filename) for filename in filenames]
+        case (False, False):
+            return filenames
+
 
 def listdir_yield(dir_name, including_dir=True):
     filenames = os.listdir(dir_name)

@@ -45,8 +45,6 @@ ncli git pull
 ncli --get_2fa --get_2fa_key your_key
 ```
 
-# 
-
 
 # Install
 
@@ -96,4 +94,3 @@ Write a function once, never write it twice!
 ## Contribution
 
 https://github.com/bigscience-workshop/data-preparation
-

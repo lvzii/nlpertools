@@ -32,6 +32,12 @@ ENGLISH_PUNCTUATION = list(",.;:'\"!?<>()")
 OTHER_PUNCTUATION = list("!@#$%^&*")
 
 
+def run_cmd(cmd):
+    import subprocess
+
+    result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+
 def setup_logging(log_file):
     """
     Set up logging configuration.
@@ -189,7 +195,7 @@ def jprint(obj, depth=0):
 
 def print_split(sign="=", num=20, char: str = None):
     if char:
-        print(sign * num // 2, char, sign * num // 2)
+        print(sign * (num // 2), char, sign * (num // 2))
     else:
         print(sign * num)
 

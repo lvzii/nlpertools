@@ -8,6 +8,7 @@ import random
 from itertools import takewhile, repeat
 from typing import Optional
 from pathlib import Path
+from typing_extensions import deprecated
 import pandas as pd
 
 # import omegaconf
@@ -156,12 +157,27 @@ def writetxt_a_list(list, path, num_lf=2):
             w.write("\n" * num_lf)
 
 
+def save_json(content, path: str | Path):
+    with codecs.open(path, "w", "utf-8") as w:
+        json.dump(content, w, ensure_ascii=False, indent=1)
+
+
+def load_json(path: str | Path):
+    with codecs.open(path, "r", "utf-8") as r:
+        content = json.load(r)
+        return content
+
+# alias, because ai likes to use read_json
+read_json = load_json
+
+@deprecated("Use save_json instead")
 def save_to_json(content, path):
     with codecs.open(path, "w", "utf-8") as w:
         json.dump(content, w, ensure_ascii=False, indent=1)
 
 
-def load_from_json(path: Optional[str | Path]):
+@deprecated("Use save_json instead")
+def load_from_json(path: str | Path):
     with codecs.open(path, "r", "utf-8") as r:
         content = json.load(r)
         return content

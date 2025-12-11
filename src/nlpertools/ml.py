@@ -39,7 +39,9 @@ def estimate_pass_at_k(num_samples: list, num_correct: list, k):
         assert len(num_samples) == len(num_correct)
         num_samples_it = iter(num_samples)
 
-    return np.array([estimator(int(n), int(c), k) for n, c in zip(num_samples_it, num_correct)])
+    return np.array(
+        [estimator(int(n), int(c), k) for n, c in zip(num_samples_it, num_correct)]
+    )
 
 
 def estimate_pass_at_k_fixed(num_samples: list, num_correct: list, k):
@@ -52,11 +54,17 @@ def estimate_pass_at_k_fixed(num_samples: list, num_correct: list, k):
 
 def estimate_pass_at_k_return_num(num_samples: list, num_correct: list, k):
     """直接返回求完平均的"""
-    return round(estimate_pass_at_k(num_samples, num_correct, k).mean() * 100, 2)
+    return float(round(estimate_pass_at_k(num_samples, num_correct, k).mean() * 100, 2))
 
 
 def calc_llm_train_activation_memory(
-    model_name, sequence_length, batch_size, hidden_dim, lay_number, attention_heads_num, gpu_num=1
+    model_name,
+    sequence_length,
+    batch_size,
+    hidden_dim,
+    lay_number,
+    attention_heads_num,
+    gpu_num=1,
 ):
     """
     return bytes
@@ -117,7 +125,9 @@ class DataStructure:
         "source": "baidu",
     }
     ner_input_example = "这句话一共有两个实体分别为大象和老鼠。"
-    ner_label_example = list("OOOOOOOOOOOOO") + ["B-s", "I-s"] + ["O"] + ["B-o", "I-o"] + ["O"]
+    ner_label_example = (
+        list("OOOOOOOOOOOOO") + ["B-s", "I-s"] + ["O"] + ["B-o", "I-o"] + ["O"]
+    )
 
 
 def text_jaccard(ipt1, ipt2, ipt_level="char", sim_level="char"):
@@ -223,7 +233,9 @@ def subject_object_labeling(spo_list, text):
         if len(spo) == 2:
             labeling_list[idx_start + 1] = "I-" + spo_type
         elif len(spo) >= 3:
-            labeling_list[idx_start + 1 : idx_start + len(spo)] = ["I-" + spo_type] * (len(spo) - 1)
+            labeling_list[idx_start + 1 : idx_start + len(spo)] = ["I-" + spo_type] * (
+                len(spo) - 1
+            )
         else:
             pass
 
@@ -254,7 +266,10 @@ def label(text, labels):
     :return:
     """
     train_sequence = "\n".join(
-        ["\t".join(i) if i[0] != " " else "[null]\t{}".format(i[1]) for i in zip(list(text), labels)]
+        [
+            "\t".join(i) if i[0] != " " else "[null]\t{}".format(i[1])
+            for i in zip(list(text), labels)
+        ]
     )
     return train_sequence
 
@@ -274,8 +289,12 @@ def convert_crf_format_10_fold(corpus, objdir_path):
             train_set = corpus[: k * split_position]
         else:
             dev_set = corpus[k * split_position : (k + 1) * split_position]
-            train_set = corpus[: k * split_position] + corpus[(k + 1) * split_position :]
-        writetxt_w_list(train_set, os.path.join(objdir_path, "train{}.txt".format(k + 1)))
+            train_set = (
+                corpus[: k * split_position] + corpus[(k + 1) * split_position :]
+            )
+        writetxt_w_list(
+            train_set, os.path.join(objdir_path, "train{}.txt".format(k + 1))
+        )
         writetxt_w_list(dev_set, os.path.join(objdir_path, "test{}.txt".format(k + 1)))
         writetxt_w_list(dev_set, os.path.join(objdir_path, "dev{}.txt".format(k + 1)))
 
@@ -375,7 +394,9 @@ def kfold_df(df, save_dir=None):
 
     train_idx, test_and_val_idx = KFold(n_splits=8, shuffle=True).split(df).__next__()
     df_test_and_val = df.iloc[test_and_val_idx]
-    test_idx, val_idx = KFold(n_splits=2, shuffle=True).split(df_test_and_val).__next__()
+    test_idx, val_idx = (
+        KFold(n_splits=2, shuffle=True).split(df_test_and_val).__next__()
+    )
     df_train = df.iloc[train_idx]
     df_val = df.iloc[val_idx]
     df_test = df.iloc[test_idx]

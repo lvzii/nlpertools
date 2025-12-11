@@ -2,7 +2,7 @@ import os
 from tqdm import tqdm
 import concurrent.futures
 import itertools
-
+import re
 
 INFER_PARAS = {
     "temperature": 0.7,
@@ -12,6 +12,18 @@ INFER_PARAS = {
     "top_k": 40,
     "repetition_penalty": 1.0,
 }
+
+
+def extract_code(text):
+    matches = re.findall(r"```(?:\w*\n)?(.*?)```", text, re.DOTALL)
+    if matches:
+        return matches[0]
+    return ""
+
+
+def extract_codes(text):
+    matches = re.findall(r"```(?:\w*\n)?(.*?)```", text, re.DOTALL)
+    return matches
 
 
 def parse_infer_data(infer_data: list):

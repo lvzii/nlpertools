@@ -9,7 +9,11 @@ from typing import Optional, Union
 
 
 def call_once_stream(
-    client, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192, temperature=0.2
+    client,
+    input: Optional[Union[str, list]],
+    model_name: str = "qwen3-0626-e4",
+    max_tokens: int = 8192,
+    temperature=0.2,
 ) -> str:
     """
     调用LLM模型进行一次推理
@@ -25,7 +29,9 @@ def call_once_stream(
     elif isinstance(input, list):
         message = input
 
-    completion = client.chat.completions.create(model=model_name, messages=message, max_tokens=max_tokens, stream=True)
+    completion = client.chat.completions.create(
+        model=model_name, messages=message, max_tokens=max_tokens, stream=True, temperature=temperature
+    )
     text = ""
     for chunk in completion:
         if chunk.choices:
@@ -39,7 +45,12 @@ def call_once_stream(
 
 
 def call_once(
-    client, input: Optional[Union[str, list]], model_name: str = "qwen3-0626-e4", max_tokens: int = 8192, temperature=0.8
+    client,
+    input: Optional[Union[str, list]],
+    model_name: str = "qwen3-0626-e4",
+    max_tokens: int = 8192,
+    temperature=0.8,
+    system_prompt: str = "",
 ) -> str:
     """
     调用LLM模型进行一次推理
@@ -51,10 +62,15 @@ def call_once(
     from openai import OpenAI
 
     if isinstance(input, str):
+
         message = [{"role": "user", "content": input}]
+        if system_prompt:
+            message.insert(0, {"role": "system", "content": system_prompt})
     elif isinstance(input, list):
         message = input
 
-    response = client.chat.completions.create(model=model_name, messages=message, max_tokens=max_tokens,temperature=temperature)
+    response = client.chat.completions.create(
+        model=model_name, messages=message, max_tokens=max_tokens, temperature=temperature
+    )
 
     return response.choices[0].message.content

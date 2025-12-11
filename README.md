@@ -77,7 +77,7 @@ https://nlpertools.readthedocs.io/en/latest/
           self.ltp = LTP(IPT_MODEL_PATH)
   ```
   通过`pyinstrument`判断，超过1s的包即采用这种方式
-  - 2s+ happybase、seaborn、torch、jieba
+  - 2s+ happybase、seaborn、torch、jieba、nltk
   - 1s+ /
   - 0.5s+ pandas elasticsearch transformers xgboost nltk mongo
 
@@ -97,14 +97,6 @@ https://nlpertools.readthedocs.io/en/latest/
 原则是：写过一遍的函数，绝不写第二遍！
 
 一些可能需要配置才能用的函数，写上示例
-
-
-
-## 一些常用项目
-
-nvitop
-
-ydata-profiling
 
 ## 贡献
 
