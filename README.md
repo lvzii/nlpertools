@@ -88,7 +88,7 @@ https://nlpertools.readthedocs.io/en/latest/
 
 - [打包发布指南](https://juejin.cn/post/7369413136224878644)
 
-- 发布版本需要加tag
+- 发布版本需要加tag `git push origin <tag_name>`
 
 ## 开发哲学
 

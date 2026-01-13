@@ -167,8 +167,11 @@ def load_json(path: str | Path):
         content = json.load(r)
         return content
 
-# alias, because ai likes to use read_json
+
+# alias, because ai likes to use read,write_json
 read_json = load_json
+write_json = save_json
+
 
 @deprecated("Use save_json instead")
 def save_to_json(content, path):

@@ -3,6 +3,7 @@
 # @Author  : youshu.Ji
 import os
 from pathlib import Path
+import shutil
 from typing import overload, Literal, Union
 
 
@@ -19,6 +20,12 @@ def j_walk(name, suffix=None):
             if not (suffix and not path.endswith(suffix)):
                 paths.append(path)
     return paths
+
+
+def j_rmdir(dir_name):
+    # 删除文件夹内容，保留dir_name文件夹
+    shutil.rmtree(dir_name)
+    os.mkdir(dir_name)
 
 
 def windows_to_wsl_path(windows_path):
@@ -64,7 +71,9 @@ def listdir(dir_name: Path, including_dir: Literal[False] = False) -> list[str]:
 def listdir(dir_name: str, including_dir: Literal[False] = False) -> list[str]: ...
 
 
-def listdir(dir_name: Union[Path, str], including_dir: bool = False) -> list[Path] | list[str]:
+def listdir(
+    dir_name: Union[Path, str], including_dir: bool = False
+) -> list[Path] | list[str]:
     """
     including_dir=True -> list[Path] or list[str]
     including_dir=False -> list[str]

@@ -2,3 +2,5 @@ numpy
 pandas
 psutil
 openai
+python-dotenv
+tqdm
