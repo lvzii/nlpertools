@@ -19,6 +19,26 @@ other_special_characters = (
     "」﴾》"
 )
 
+
+def filter_token_count(dataset, model_path, max_tokens=8192):
+    from transformers import AutoTokenizer
+
+    new_dataset = []
+
+    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+    for item in tqdm(dataset):
+        instruction = item["instruction"]
+        input_text = item["input"]
+        output = item["output"]
+        total_text = instruction + "\n" + input_text + "\n" + output
+        token_len = len(tokenizer.encode(total_text))
+        if token_len <= max_tokens:
+            # print(token_len)
+            new_dataset.append(item)
+    print(f"Filtered dataset from {len(dataset)} to {len(new_dataset)} by token count")
+    return new_dataset
+
+
 def startwith(text: str, pattern_list: list) -> bool:
     """
     判断text是否以pattern_list中的某个pattern开头
