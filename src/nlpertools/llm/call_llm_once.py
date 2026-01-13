@@ -8,6 +8,21 @@ from typing import Optional, Union
 """
 
 
+def get_client():
+    """
+    需要项目下有.env文件,且load_dotenv()已经被调用
+    我按照我的习惯叫DEFAULT了
+    """
+    from openai import OpenAI
+
+    default_api_key = os.getenv("DEFAULT_API_KEY")
+    default_base_url = os.getenv("DEFAULT_BASE_URL")
+    print("api_key:", default_api_key)
+    print("base_url:", default_base_url)
+    client = OpenAI(api_key=default_api_key, base_url=default_base_url)
+    return client
+
+
 def call_once_stream(
     client,
     input: Optional[Union[str, list]],
@@ -30,7 +45,11 @@ def call_once_stream(
         message = input
 
     completion = client.chat.completions.create(
-        model=model_name, messages=message, max_tokens=max_tokens, stream=True, temperature=temperature
+        model=model_name,
+        messages=message,
+        max_tokens=max_tokens,
+        stream=True,
+        temperature=temperature,
     )
     text = ""
     for chunk in completion:
@@ -70,7 +89,19 @@ def call_once(
         message = input
 
     response = client.chat.completions.create(
-        model=model_name, messages=message, max_tokens=max_tokens, temperature=temperature
+        model=model_name,
+        messages=message,
+        max_tokens=max_tokens,
+        temperature=temperature,
     )
 
+    print(response)
+
     return response.choices[0].message.content
+    response = client.response.create(
+        model=model_name,
+        messages=message,
+        max_tokens=max_tokens,
+        temperature=temperature,
+    )
+    return response.output_text

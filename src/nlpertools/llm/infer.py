@@ -35,9 +35,10 @@ def parse_infer_data(infer_data: list):
     return message
 
 
-def common_api_infer_func(model_name, infer_data: list, infer_paras, client):
+def common_api_infer_func_old(model_name, infer_data: list, infer_paras, client):
     from openai import OpenAI
 
+    client: OpenAI
     """
     infer_data: list of messages/prompt
     """
@@ -67,6 +68,39 @@ def common_api_infer_func(model_name, infer_data: list, infer_paras, client):
     return results
 
 
+def common_api_infer_func(model_name, infer_data: list, infer_paras, client):
+    from openai import OpenAI
+
+    client: OpenAI
+    """
+    infer_data: list of messages/prompt
+    """
+    messages = parse_infer_data(infer_data)
+
+    def get_response(model_name, messages, infer_paras):
+        responses = []
+        infer_times = infer_paras.get("infer_times", 1)
+
+        for _ in range(infer_times):
+            # 使用OpenAI API进行推理
+            response = client.responses.create(
+                model=model_name,
+                messages=messages,
+                temperature=infer_paras.get("temperature", 0.7),
+                max_tokens=infer_paras.get("max_tokens", 8192),
+            )
+            text = response.output_text
+            responses.append({"text": text})
+        return responses
+
+    with concurrent.futures.ThreadPoolExecutor(16) as executor:
+        futures = [executor.submit(get_response, model_name, message, infer_paras) for message in messages]
+        # results = [future.result() for future in tqdm(concurrent.futures.as_completed(futures))] # 乱序
+        results = [future.result() for future in tqdm(futures)]
+
+    return results
+
+
 def common_api_infer_func_multi_client(model_name, infer_data: list, infer_paras, clients: list):
     """
     infer_data: list of messages/prompt
@@ -82,7 +116,7 @@ def common_api_infer_func_multi_client(model_name, infer_data: list, infer_paras
         for _ in range(infer_times):
             # 使用OpenAI API进行推理
             try:
-                response = client.chat.completions.create(
+                response = client.response.create(
                     model=model_name,
                     messages=messages,
                     temperature=infer_paras.get("temperature", 0.7),
@@ -114,6 +148,8 @@ def common_vllm_infer_func(model_path, infer_data: list, infer_paras: dict):
     vllm_card_num = len(os.environ["CUDA_VISIBLE_DEVICES"].split(","))
 
     llm = LLM(model=model_path, tensor_parallel_size=vllm_card_num, trust_remote_code=True, gpu_memory_utilization=0.85)
+    # 针对qwen3-8b这种奇怪最大长度的
+    # LLM(hf_overrides={"max_sequence_length": 32768}, "max_position_embeddings": 32768)
     sampling_params = SamplingParams(
         temperature=temperature,
         n=infer_times,
