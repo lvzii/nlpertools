@@ -3,6 +3,7 @@ import os
 import uuid
 import sys
 from .dataprocess.dp_main import startwith
+from .web_server.openai2anthropic import start_forwarder_server
 
 
 def run_git_command(command):
@@ -89,6 +90,9 @@ def start_gpu_usage_notify_client():
         time.sleep(1)
 
 
+# forwarder implementation moved to web_server/openai2anthropic.py
+
+
 def main():
     parser = argparse.ArgumentParser(description="CLI tool for git operations and other functions.")
     parser.add_argument("git_command", nargs="*", help="Any git command (e.g., push, pull)")
@@ -97,6 +101,17 @@ def main():
     parser.add_argument("--get_2fa_key", type=str, help="Get the 2fa value.")
     parser.add_argument("--monitor_gpu_cli", action="store_true", help="monitor gpu cli")
     parser.add_argument("--monitor_gpu_ser", action="store_true", help="monitor gpu ser")
+    parser.add_argument("--start_forward", action="store_true", help="Start Anthropic->OpenAI forwarder server")
+    parser.add_argument(
+        "--forward_target_url",
+        type=str,
+        help="Target OpenAI-compatible URL (e.g., https://api.openai.com/v1/chat/completions)",
+    )
+    parser.add_argument("--forward_api_key", type=str, help="API key to use when calling the target URL")
+    parser.add_argument("--forward_port", type=int, default=7860, help="Port for the forwarder server (default: 7860)")
+    parser.add_argument(
+        "--forward_host", type=str, default="0.0.0.0", help="Host for the forwarder server (default: 0.0.0.0)"
+    )
 
     args = parser.parse_args()
 
@@ -114,6 +129,16 @@ def main():
             get_2af_value(args.get_2fa_key)
         else:
             print("Please provide a key as an argument.")
+    elif args.start_forward:
+        if not args.forward_target_url:
+            print("Please provide --forward_target_url for the target OpenAI endpoint.")
+            return
+        start_forwarder_server(
+            target_url=args.forward_target_url,
+            api_key=args.forward_api_key,
+            host=args.forward_host,
+            port=args.forward_port,
+        )
     else:
         print("No operation specified.")
 
