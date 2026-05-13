@@ -52,8 +52,6 @@ def startwith(text: str, pattern_list: list) -> bool:
 
 
 class Pattern:
-    import numpy as np
-
     """
     >>> pattern_special_char = re.compile("[{}{}]".format(pattern_special_char_x[1:-1], pattern_special_char_u[1:-1]))
         a = "\U000d8be6asdasdas \x00v啊实打实\x00\x00v阿松大\x00"
