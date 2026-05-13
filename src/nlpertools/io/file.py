@@ -9,7 +9,6 @@ from itertools import takewhile, repeat
 from typing import Optional
 from pathlib import Path
 from typing_extensions import deprecated
-import pandas as pd
 
 # import omegaconf
 # import yaml
@@ -56,7 +55,7 @@ def iter_count(file_name):
 """
 readtxt_list_all_strip
 save_to_json
-load_from_json
+load_json
 """
 
 
@@ -173,19 +172,6 @@ read_json = load_json
 write_json = save_json
 
 
-@deprecated("Use save_json instead")
-def save_to_json(content, path):
-    with codecs.open(path, "w", "utf-8") as w:
-        json.dump(content, w, ensure_ascii=False, indent=1)
-
-
-@deprecated("Use save_json instead")
-def load_from_json(path: str | Path):
-    with codecs.open(path, "r", "utf-8") as r:
-        content = json.load(r)
-        return content
-
-
 # 读txt文件 读成一条string if gb2312
 def readtxt_string_all_encoding(path):
     try:
@@ -231,7 +217,7 @@ def readtxt_list_all_encoding(path):
 
 
 # line by line
-def save_to_jsonl(corpus, path):
+def save_jsonl(corpus, path):
     with open(path, "w", encoding="utf-8") as wt:
         for i in corpus:
             wt.write(json.dumps(i, ensure_ascii=False))
@@ -239,7 +225,7 @@ def save_to_jsonl(corpus, path):
 
 
 # line by line
-def load_from_jsonl(path):
+def load_jsonl(path):
     file_line_num = iter_count(path)
     if file_line_num > 1e5:
         with open(path, "r", encoding="utf-8") as rd:
@@ -274,7 +260,7 @@ def load_pkl(path):
     return data
 
 
-def save_to_csv(df, save_path, index_flag=False):
+def save_csv(df, save_path, index_flag=False):
     with open(save_path, "wb+") as csvfile:
         csvfile.write(codecs.BOM_UTF8)
     df.to_csv(save_path, mode="a", index=index_flag)
@@ -293,7 +279,9 @@ def load_from_mongo():
     pass
 
 
-def unmerge_cells_df(df) -> pd.DataFrame:
+def unmerge_cells_df(df):
+    import pandas as pd
+
     for column in df.columns:
         values = []
         for i in df[column]:

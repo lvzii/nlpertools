@@ -34,7 +34,7 @@ nlpertools
 import nlpertools
 
 txt_data = nlpertools.readtxt_list_all_strip('res.txt')
-json_data = nlpertools.load_from_json('res.json')
+json_data = nlpertools.load_json('res.json')
 ```
 
 ```bash

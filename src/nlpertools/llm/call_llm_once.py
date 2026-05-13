@@ -95,7 +95,7 @@ def call_once(
         temperature=temperature,
     )
 
-    print(response)
+    # print(response)
 
     return response.choices[0].message.content
     response = client.response.create(

@@ -5,7 +5,6 @@ import re
 import string
 from typing import List
 
-import numpy as np
 
 # from . import DB_CONFIG_FILE # cannot import name 'DB_CONFIG_FILE' from partially initialized module 'nlpertools'
 from ..utils.package import *
@@ -53,6 +52,8 @@ def startwith(text: str, pattern_list: list) -> bool:
 
 
 class Pattern:
+    import numpy as np
+
     """
     >>> pattern_special_char = re.compile("[{}{}]".format(pattern_special_char_x[1:-1], pattern_special_char_u[1:-1]))
         a = "\U000d8be6asdasdas \x00v啊实打实\x00\x00v阿松大\x00"
@@ -140,18 +141,21 @@ class Pattern:
     ]
 
     # Patterns for high-risk character strings
-    id_pattern = r'(?:^|[\b\s@?,!;:\'\")(.\p{Han}])([A-Za-z]*(?:[\p{Pd}]*\p{Nd}){6,})(?:$|[\b\s@?,!;:\'\")(.\p{Han}])'
+    id_pattern = r"(?:^|[\b\s@?,!;:\'\")(.\p{Han}])([A-Za-z]*(?:[\p{Pd}]*\p{Nd}){6,})(?:$|[\b\s@?,!;:\'\")(.\p{Han}])"
     # https://regex101.com/r/JQkmh8/2
     # key_pattern = r'(?:^|[\b\s@?,!;:\'\")(.\p{Han}])((?:(?:[A-Za-z]+[\p{Nd}\p{Pd}\/\+\=:]+|[\p{Nd}\p{Pd}\/\+\=:]+[A-Za-z]+)){4,}|(?:(?:\p{Nd}{3,}|[A-Z]+\p{Nd}+[A-Z]*|\p{Nd}+[A-Z]+\p{Nd}*)[\s\p{Pd}]?){4,})(?:$|[\b\s\p{Han}@?,!;:\'\"])'
     # https://regex101.com/r/JQkmh8/5
-    key_pattern = r'(?:^|[\b\s@?,!:;\'\")(.\p{Han}])((?:(?:[A-Za-z]+[\p{Nd}\p{Pd}\/\+\=:_]+|[\p{Nd}\p{Pd}\/\+\=:]+[A-Za-z]+)){4,}|(?:(?:\p{Nd}{3,}|[A-Z]+\p{Nd}+[A-Z]*|\p{Nd}+[A-Z]+\p{Nd}*)[ \p{Pd}]?){3,})(?:$|[\b\s\p{Han}@?,!;:\'\")(.])'
-    ipv4_pattern = r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}'
-    ipv6_pattern = r'(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
-    ip_pattern = r"(?:^|[\b\s@?,!;:\'\")(.\p{Han}])(" + r"|".join(
-        [ipv4_pattern, ipv6_pattern]) + r")(?:$|[\s@,?!;:\'\"(.\p{Han}])"
+    key_pattern = r"(?:^|[\b\s@?,!:;\'\")(.\p{Han}])((?:(?:[A-Za-z]+[\p{Nd}\p{Pd}\/\+\=:_]+|[\p{Nd}\p{Pd}\/\+\=:]+[A-Za-z]+)){4,}|(?:(?:\p{Nd}{3,}|[A-Z]+\p{Nd}+[A-Z]*|\p{Nd}+[A-Z]+\p{Nd}*)[ \p{Pd}]?){3,})(?:$|[\b\s\p{Han}@?,!;:\'\")(.])"
+    ipv4_pattern = r"(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}"
+    ipv6_pattern = r"(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])"
+    ip_pattern = (
+        r"(?:^|[\b\s@?,!;:\'\")(.\p{Han}])("
+        + r"|".join([ipv4_pattern, ipv6_pattern])
+        + r")(?:$|[\s@,?!;:\'\"(.\p{Han}])"
+    )
 
     # https://regex101.com/r/EpA5B7/1
-    email_line_pattern = r'''
+    email_line_pattern = r"""
         (?<= ^ | [\b\s@,?!;:)('".\p{Han}<] )
         (
         [^\b\s@?!;,:)('"<]+
@@ -162,16 +166,16 @@ class Pattern:
         \p{L} \w{1,}
         )
         (?= $ | [\b\s@,?!;:)('".\p{Han}>] )
-    '''
+    """
 
     # https://regex101.com/r/mOqi1s/3
     # user_pattern = r'(?:^|[\s@,?!;:\'\")(\p{Han}])(@[^\s@,?!;:\'\")(]{3,})'
-    user_pattern = r'''
+    user_pattern = r"""
     (?<= ^ | [)(\s@,?!;:'"\p{Han}] )
     (@
         [^)(\s@,?!;:'"]{3,}
     )
-    '''
+    """
 
 
 class CalcPPL(object):
@@ -179,7 +183,9 @@ class CalcPPL(object):
     # https://www.scribendi.ai/comparing-bert-and-gpt-2-as-language-models-to-score-the-grammatical-correctness-of-a-sentence/
     def __init__(self, model_type, model_path, tokenizer_path):
         self.model_type = model_type
-        self.model, self.tokenizer = self._init_model(model_type, model_path, tokenizer_path)
+        self.model, self.tokenizer = self._init_model(
+            model_type, model_path, tokenizer_path
+        )
 
     @staticmethod
     def _init_model(model_type, model_path, tokenizer_path):
@@ -227,14 +233,18 @@ class CalcPPL(object):
         model = self.tokenizer
         with torch.no_grad():
             tokenize_input = tokenizer.tokenize(sentence)
-            tensor_input = torch.tensor([tokenizer.convert_tokens_to_ids(tokenize_input)])
+            tensor_input = torch.tensor(
+                [tokenizer.convert_tokens_to_ids(tokenize_input)]
+            )
             sen_len = len(tokenize_input)
-            sentence_loss = 0.
+            sentence_loss = 0.0
 
             for i, word in enumerate(tokenize_input):
                 # add mask to i-th character of the sentence
-                tokenize_input[i] = '[MASK]'
-                mask_input = torch.tensor([tokenizer.convert_tokens_to_ids(tokenize_input)])
+                tokenize_input[i] = "[MASK]"
+                mask_input = torch.tensor(
+                    [tokenizer.convert_tokens_to_ids(tokenize_input)]
+                )
 
                 output = model(mask_input)
 
@@ -251,18 +261,31 @@ class CalcPPL(object):
 
     def ppl3_gpt(self, text):
         from torch.nn import CrossEntropyLoss
+
         # 这里用 GPT2LMHeadModel
-        inputs = self.tokenizer([text], padding='max_length', max_length=50, truncation=True, return_tensors="pt")
-        bs, sl = inputs['input_ids'].size()
-        outputs = self.model(**inputs, labels=inputs['input_ids'])
+        inputs = self.tokenizer(
+            [text],
+            padding="max_length",
+            max_length=50,
+            truncation=True,
+            return_tensors="pt",
+        )
+        bs, sl = inputs["input_ids"].size()
+        outputs = self.model(**inputs, labels=inputs["input_ids"])
         logits = outputs[1]
         # Shift so that tokens < n predict n
         shift_logits = logits[:, :-1, :].contiguous()
-        shift_labels = inputs['input_ids'][:, 1:].contiguous()
-        shift_attentions = inputs['attention_mask'][:, 1:].contiguous()
+        shift_labels = inputs["input_ids"][:, 1:].contiguous()
+        shift_attentions = inputs["attention_mask"][:, 1:].contiguous()
         # Flatten the tokens
         loss_fct = CrossEntropyLoss(ignore_index=0, reduction="none")
-        loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)).detach().reshape(bs, -1)
+        loss = (
+            loss_fct(
+                shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
+            )
+            .detach()
+            .reshape(bs, -1)
+        )
         meanloss = loss.sum(1) / shift_attentions.sum(1)
         ppl = torch.exp(meanloss).numpy().tolist()
         return ppl[0]
@@ -282,10 +305,10 @@ class TextProcess(object):
     """
 
     def __init__(
-            self,
-            patterns_filter: List = None,
-            patterns_replace: List[List] = None,
-            words_filter: List = []
+        self,
+        patterns_filter: List = None,
+        patterns_replace: List[List] = None,
+        words_filter: List = [],
     ):
         """
         pattern_list:
@@ -388,7 +411,7 @@ class TextProcess(object):
         for idx, char in enumerate(sentence):
             if idx == len(sentence) - 1:
                 if char in split_signs:
-                    sentences.append(sentence[start_idx: idx + 1].strip())
+                    sentences.append(sentence[start_idx : idx + 1].strip())
                     start_idx = idx + 1
                 else:
                     sentences.append(sentence[start_idx:].strip())
@@ -398,10 +421,10 @@ class TextProcess(object):
                         if idx < len(sentence) - 2:
                             # 处理。”。
                             if sentence[idx + 2] not in split_signs:
-                                sentences.append(sentence[start_idx: idx + 2].strip())
+                                sentences.append(sentence[start_idx : idx + 2].strip())
                                 start_idx = idx + 2
                     elif sentence[idx + 1] not in split_signs:
-                        sentences.append(sentence[start_idx: idx + 1].strip())
+                        sentences.append(sentence[start_idx : idx + 1].strip())
                         start_idx = idx + 1
         sentences = [i.strip() for i in sentences if i.strip()]
         return sentences
@@ -521,21 +544,21 @@ class TextProcess(object):
 
     @staticmethod
     def uniform_whitespace(
-            document,
-            whitespace=[
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                "　",
-                " ",
-                " ",
-                " ",
-                " ",
-                "￼",
-                "",
-            ],
+        document,
+        whitespace=[
+            " ",
+            " ",
+            " ",
+            " ",
+            " ",
+            "　",
+            " ",
+            " ",
+            " ",
+            " ",
+            "￼",
+            "",
+        ],
     ):
         # from https://github.com/bigscience-workshop/data-preparation
         """There are different whitespace characters."""
@@ -566,13 +589,13 @@ class TextProcess(object):
             pass
         chinese_count = 0
         for char in text:
-            if '\u4e00' <= char <= '\u9fff':
+            if "\u4e00" <= char <= "\u9fff":
                 chinese_count += 1
             else:
                 pass
 
 
-class CopyFunc():
+class CopyFunc:
     # from https://github.com/lemon234071/clean-dialog
     def is_chinese_char(cp):
         """Checks whether CP is the codepoint of a CJK character."""
@@ -585,14 +608,14 @@ class CopyFunc():
         # space-separated words, so they are not treated specially and handled
         # like the all of the other languages.
         return (
-                (cp >= 0x4E00 and cp <= 0x9FFF)
-                or (cp >= 0x3400 and cp <= 0x4DBF)  #
-                or (cp >= 0x20000 and cp <= 0x2A6DF)  #
-                or (cp >= 0x2A700 and cp <= 0x2B73F)  #
-                or (cp >= 0x2B740 and cp <= 0x2B81F)  #
-                or (cp >= 0x2B820 and cp <= 0x2CEAF)  #
-                or (cp >= 0xF900 and cp <= 0xFAFF)
-                or (cp >= 0x2F800 and cp <= 0x2FA1F)  #
+            (cp >= 0x4E00 and cp <= 0x9FFF)
+            or (cp >= 0x3400 and cp <= 0x4DBF)  #
+            or (cp >= 0x20000 and cp <= 0x2A6DF)  #
+            or (cp >= 0x2A700 and cp <= 0x2B73F)  #
+            or (cp >= 0x2B740 and cp <= 0x2B81F)  #
+            or (cp >= 0x2B820 and cp <= 0x2CEAF)  #
+            or (cp >= 0xF900 and cp <= 0xFAFF)
+            or (cp >= 0x2F800 and cp <= 0x2FA1F)  #
         )
 
     def contains_Chinese(seq):
@@ -638,7 +661,7 @@ def clean_illegal_chars_for_excel(df):
     def remove_illegal_chars(s):
         if isinstance(s, str):
             # 移除 ASCII 码在非法范围内的字符
-            return re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F]', '', s)
+            return re.sub(r"[\x00-\x08\x0B\x0C\x0E-\x1F]", "", s)
         return s
 
     # 应用清理函数到数据框的每个元素

@@ -1,7 +1,6 @@
-import numpy as np
-
-
 class HMM:
+    import numpy as np
+
     def __init__(self, pi, A, B):
         self.pi = pi
         self.A = A
@@ -33,12 +32,15 @@ class HMM:
         return result
 
 
-# 状态转移矩阵
-A = np.array([[0, 1, 0, 0], [0.4, 0, 0.6, 0], [0, 0.4, 0, 0.6], [0, 0, 0.5, 0.5]])
-# 观测概率矩阵/发射矩阵
-B = np.array([[0.5, 0.5], [0.3, 0.7], [0.6, 0.4], [0.8, 0.2]])
-# 初始概率分布
-pi = np.array([0.25, 0.25, 0.25, 0.25])
+def test_hmm():
+    import numpy as np
 
-hmm = HMM(pi, A, B)
-print(hmm.generate(10))  # 生成10个数据
+    # 状态转移矩阵
+    A = np.array([[0, 1, 0, 0], [0.4, 0, 0.6, 0], [0, 0.4, 0, 0.6], [0, 0, 0.5, 0.5]])
+    # 观测概率矩阵/发射矩阵
+    B = np.array([[0.5, 0.5], [0.3, 0.7], [0.6, 0.4], [0.8, 0.2]])
+    # 初始概率分布
+    pi = np.array([0.25, 0.25, 0.25, 0.25])
+
+    hmm = HMM(pi, A, B)
+    print(hmm.generate(10))  # 生成10个数据

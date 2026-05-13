@@ -19,9 +19,9 @@ def get_version():
 def main():
     setup(
         # https://juejin.cn/post/7369349560421040128
-        install_requires=["numpy", "pandas", "psutil", "openai", "python-dotenv"],
+        install_requires=["psutil", "openai", "python-dotenv"],
         extras_require={
-            "torch": ["torch"],
+            "torch": ["numpy", "pandas", "torch"],
         },
         version=get_version(),
         entry_points={
