@@ -8,8 +8,6 @@ Dependency:
     pip install pymupdf
 """
 
-from __future__ import annotations
-
 import argparse
 import re
 import statistics
@@ -87,7 +85,9 @@ def estimate_body_font_size(document: fitz.Document) -> float:
         return statistics.median(sizes)
 
 
-def convert_pdf_to_markdown(pdf_path: Path, start_page: int, end_page: int | None) -> str:
+def convert_pdf_to_markdown(
+    pdf_path: Path, start_page: int, end_page: int | None
+) -> str:
     """Convert selected pages of a PDF to Markdown string."""
     doc = fitz.open(pdf_path)
     try:
