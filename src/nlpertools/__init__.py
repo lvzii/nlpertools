@@ -19,6 +19,7 @@ from .wrapper import *
 from .monitor import *
 from .cli import *
 from .llm import *
+from .web_server import *
 
 
-__version__ = "1.0.18"
+__version__ = "1.0.19"
