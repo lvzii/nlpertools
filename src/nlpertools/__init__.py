@@ -21,4 +21,8 @@ from .cli import *
 from .llm import *
 
 
+<<<<<<< HEAD
 __version__ = "1.0.17"
+=======
+__version__ = "1.0.15"
+>>>>>>> e8dfdaa3f26aa68b7fbcbf4587cf1da95ddb2c08
